@@ -1,0 +1,36 @@
+<mat-drawer-container autosize class="workspace">
+    <mat-drawer #drawer class="sidenav" mode="side" [opened]="true">
+        <app-directory [directory]="workspace.directory" (bloSelected)="onBloSelected($event)" (lvlSelected)="onLvlSelected($event)"></app-directory>
+    </mat-drawer>
+    <div>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex" #tabGroup>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <mat-icon>chevron_left</mat-icon>
+                </ng-template>
+                <div>
+                    <div class="welcome-message">
+                        Please open a file from the left-hand panel to begin editing.
+                    </div>
+                </div>
+            </mat-tab>
+
+            @for (tab of tabs; track tab.name)
+            {
+                <mat-tab label="{{ tab.name }}">
+                    @switch(tab.type)
+                    {
+                        @case (TabContextType.Blo)
+                        {
+                            <app-blo-tab [context]="asBlobContext(tab)"></app-blo-tab>
+                        }
+                        @case (TabContextType.Lvl)
+                        {
+                            <app-lvl-tab [context]="asLevelContext(tab)"></app-lvl-tab>
+                        }
+                    }
+                </mat-tab>
+            }
+        </mat-tab-group>
+    </div>
+</mat-drawer-container>

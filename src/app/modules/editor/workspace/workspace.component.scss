@@ -1,0 +1,17 @@
+.workspace {
+    width: 100vw;
+    height: 100vh;   
+}
+
+.sidenav {
+    display: flex;
+    height: 100%;
+}
+
+.welcome-message {
+    padding-top: 45vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}

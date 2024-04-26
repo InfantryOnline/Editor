@@ -1,0 +1,23 @@
+<div>
+    
+        <mat-list>
+            @if (directory.lvlFiles.length > 0)
+            {   
+                <div mat-subheader><strong>.lvl files</strong></div>
+                @for (lvl of directory.lvlFiles; track lvl.name)
+                {
+                    <mat-list-item>
+                        <button mat-button color="primary" (click)="onSelectLvlFile(lvl)">{{ lvl.name }}</button>
+                    </mat-list-item>
+                }
+
+                <div mat-subheader><strong>.blo files</strong></div>
+                @for (blo of directory.bloFiles; track blo.name)
+                {
+                    <mat-list-item>
+                        <button mat-button color="primary" (click)="onSelectBloFile(blo)">{{ blo.name }}</button>
+                    </mat-list-item>
+                }
+            }
+        </mat-list>
+</div>

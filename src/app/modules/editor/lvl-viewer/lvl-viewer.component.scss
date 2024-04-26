@@ -1,0 +1,14 @@
+.container {
+    position: relative;
+}
+
+.terrain-canvas {
+    position: absolute;
+    background: #111;
+}
+
+.object-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}

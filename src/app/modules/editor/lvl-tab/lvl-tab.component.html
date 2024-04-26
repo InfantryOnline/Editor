@@ -1,0 +1,13 @@
+<mat-toolbar>
+    <button mat-button color="primary"><strong>Move Camera</strong></button>
+    <button mat-button color="primary" (click)="onFloorSelect()">Floor Placement</button>
+    <button mat-button color="primary">Object Placement</button>
+    <button mat-button color="primary">Physics/Vision Placement</button>
+    <span class="example-spacer"></span>
+    <mat-checkbox class="example-margin" color="primary">Show Physics</mat-checkbox>
+    <mat-checkbox class="example-margin" color="primary">Show Vision</mat-checkbox>
+    <button mat-icon-button aria-label="Show Map" color="primary">
+        <mat-icon>map</mat-icon>
+      </button>
+</mat-toolbar>
+<app-lvl-viewer [context]="context"></app-lvl-viewer>

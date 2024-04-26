@@ -1,0 +1,39 @@
+<mat-card>
+    <mat-card-header>
+        <mat-card-title>{{ context?.name}}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+        <div class="splitter">
+            <div class="list">
+                <mat-list>
+                    @for (entry of context?.file?.entries; track entry.name)
+                    {
+                        <mat-list-item>
+                            <button mat-button color="primary" (click)="onEntrySelected(entry)">{{ entry.name }}</button>
+                        </mat-list-item>
+                    }
+                </mat-list>
+            </div>
+            @if (selectedEntry)
+            {
+                <div class="details">
+                    <div style="margin-bottom: 20px;">
+                        <mat-chip-set>
+                            <mat-chip class="attribute"><strong>Name:</strong> {{ selectedEntry.name }}</mat-chip>
+                            <mat-chip class="attribute"><strong>Offset:</strong> {{ selectedEntry.offset }}</mat-chip>
+                            <mat-chip class="attribute"><strong>Length:</strong> {{ selectedEntry.length }}</mat-chip>
+                        </mat-chip-set>
+                    </div>
+                    @if (selectedSprite)
+                    {
+                        <app-cfs-preview [sprite]="selectedSprite"></app-cfs-preview>
+                    }
+                </div>
+            }
+        </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+    </mat-card-actions>
+</mat-card>

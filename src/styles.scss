@@ -1,1 +1,22 @@
+@use "@angular/material" as mat;
+@import "theme/indigo-pink";
+
+@include mat.core();
+
+@import "./app/modules/prelude/import-directory/import-directory.theme.scss";
+
+// Include all theme styles for the components.
+// Define a theme.
+$primary: mat.define-palette($mat-indigo);
+$accent:  mat.define-palette($mat-pink, A200, A100, A400);
+
+$theme: mat.define-light-theme((color: (primary: $primary, accent: $accent), typography: mat.define-typography-config(), density: 0));
+
+@include mat.all-component-themes($theme);
+@include import-directory-theme($theme);
+
 /* You can add global styles to this file, and also import other style files */
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+ 

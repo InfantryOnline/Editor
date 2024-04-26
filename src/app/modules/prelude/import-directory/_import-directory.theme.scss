@@ -1,0 +1,24 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin import-directory-theme($theme) {
+    $primary: mat.get-theme-color($theme, primary, 500);
+
+    .note {
+        color: white;
+    }
+
+    .import-shell {
+        background-color: $primary;
+    }
+}
+
+@mixin import-directory-typography($config) {
+    .import-shell {
+        font: {
+            family: mat-font-family($config, body-1);
+            size: mat-font-size($config, body-1);
+            weight: mat-font-size($config, body-1);
+        }
+    }
+}
