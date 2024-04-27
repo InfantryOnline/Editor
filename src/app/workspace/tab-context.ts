@@ -31,6 +31,7 @@ export class LevelTabContext implements ITabContext {
     readonly type: TabContextType = TabContextType.Lvl;
     name: string = '';
     file: LevelFile | null = null;
+    loading: boolean = false;
     workspace: Workspace = new Workspace();
     viewport: Viewport = new Viewport();
     rendering: boolean = false;

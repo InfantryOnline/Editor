@@ -1,3 +1,12 @@
 .example-spacer {
     flex: 1 1 auto;
-  }
+}
+
+.loading {
+    .mat-mdc-progress-spinner {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    margin-top: 40vh;
+}

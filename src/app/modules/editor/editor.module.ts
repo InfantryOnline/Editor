@@ -17,6 +17,8 @@ import { CfsPreviewComponent } from "./cfs-preview/cfs-preview.component";
 import {MatChipsModule} from '@angular/material/chips';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { MinimapOverlayComponent } from "./minimap-overlay/minimap-overlay.component";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 
 /**
  * Contains all the angular entities as it relates to the editor.
@@ -24,7 +26,7 @@ import { MinimapOverlayComponent } from "./minimap-overlay/minimap-overlay.compo
 @NgModule({
     declarations: [WorkspaceComponent, DirectoryComponent, BloTabComponent, LvlTabComponent, LvlViewerComponent, CfsPreviewComponent, MinimapOverlayComponent],
     exports: [WorkspaceComponent, DirectoryComponent],
-    imports: [MatButtonModule, MatSidenavModule, MatListModule, MatTabsModule, MatIconModule, MatCardModule, MatToolbarModule, MatDialogModule, MatCheckboxModule, MatChipsModule, OverlayModule]
+    imports: [MatButtonModule, MatSidenavModule, MatListModule, MatTabsModule, MatIconModule, MatCardModule, MatToolbarModule, MatDialogModule, MatCheckboxModule, MatChipsModule, OverlayModule, MatProgressSpinnerModule]
 })
 export class EditorModule {
 

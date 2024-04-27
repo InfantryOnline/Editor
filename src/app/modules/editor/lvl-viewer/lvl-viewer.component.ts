@@ -68,6 +68,10 @@ export class LvlViewerComponent implements AfterViewInit {
             return;
         }
 
+        if (this.context) {
+            this.context.loading = true;
+        }
+
         let offscreenTerrainCanvas = this.terrainCanvas.nativeElement.transferControlToOffscreen();
         let offscreenObjectCanvas = this.objectCanvas.nativeElement.transferControlToOffscreen();
 
@@ -91,6 +95,10 @@ export class LvlViewerComponent implements AfterViewInit {
             } else if (message.data.type === 'minimap') {
                 if (this.context) {
                     this.context.minimapBitmap = message.data.bitmap;
+                }
+
+                if (this.context) {
+                    this.context.loading = false;
                 }
             }
         };
