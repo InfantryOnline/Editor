@@ -256,9 +256,12 @@ class Renderer {
 
     // Render Floors.
 
-    this.terrainCanvas.width = this.canvasWidth;
-    this.terrainCanvas.height = this.canvasHeight;
+    if (this.terrainCanvas.width != this.canvasWidth || this.terrainCanvas.height != this.canvasHeight) {
+      this.terrainCanvas.width = this.canvasWidth;
+      this.terrainCanvas.height = this.canvasHeight;
+    }
 
+    ctx.resetTransform();
     ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
     ctx.translate(this.context.viewport.topLeftX, this.context?.viewport.topLeftY);
 
@@ -310,14 +313,18 @@ class Renderer {
 
     if (this.objectCanvas)
     {
-      this.objectCanvas.width = this.canvasWidth;
-      this.objectCanvas.height = this.canvasHeight;
+      if (this.objectCanvas.width != this.canvasWidth || this.objectCanvas.height != this.canvasHeight) {
+        this.objectCanvas.width = this.canvasWidth;
+        this.objectCanvas.height = this.canvasHeight;
+      }
 
       const ctx = this.objectCanvas.getContext('2d');
 
       if (!ctx) {
         throw new Error();
       }
+
+      ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
       let tlGridX = Math.floor((TLX * 16) / this.floorCanvasSize);
       let tlGridY = Math.floor((TLY * 16) / this.floorCanvasSize);
