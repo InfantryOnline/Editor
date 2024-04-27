@@ -22,6 +22,7 @@ class Renderer {
 
   objectGrid: any[] = [];
   objectGridSize = this.floorCanvasSize;
+  lastDt: number = 0;
 
   get directory(): Directory | undefined { return this.context?.workspace.directory; }
 
@@ -247,12 +248,14 @@ class Renderer {
     }
   }
 
-  render(): void {
+  render(dt: number): void {
     let ctx = this.terrainCanvas?.getContext('2d');
 
     if (!this.terrainCanvas || !ctx || !this.context) {
       return;
     }
+
+    this.lastDt = dt;
 
     // Render Floors.
 
@@ -349,7 +352,7 @@ class Renderer {
     }
 
     if (this.rendering) {
-      self.requestAnimationFrame(() => this.render());
+      self.requestAnimationFrame((dt) => this.render(dt));
     }
   }
 
@@ -400,7 +403,7 @@ addEventListener('message', async ({ data }) => {
       renderer.canvasHeight = bounds.height;
     }
     renderer.rendering = true;
-    renderer.render(); 
+    self.requestAnimationFrame((dt) => renderer.render(dt)); 
   }
   else if (data.type === 'updaterender') {
     let bounds = data.bounds;

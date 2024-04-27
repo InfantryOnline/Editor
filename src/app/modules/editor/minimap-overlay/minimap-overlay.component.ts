@@ -83,9 +83,20 @@ export class MinimapOverlayComponent implements AfterViewInit, OnDestroy {
     }
 
     onMouseDown($event: MouseEvent): void {
-        //this.dragging = true;
-        this.dragStart.x = $event.clientX;
-        this.dragStart.y = $event.clientY;
+        this.dragging = true;
+        // Scale from the minimap, which is 512x512, to the actual map, which is up to 32768 x 32768 pixels.
+        let x = $event.offsetX * 64;
+        let y = $event.offsetY * 64;
+        
+        this.dragStart.x = $event.offsetX;
+        this.dragStart.y = $event.offsetY;
+
+        if (this.context) {
+            let hw = Math.floor(this.context.viewport.width / 2);
+            let hh = Math.floor(this.context.viewport.height / 2);
+            this.context.viewport.topLeftX = -x + hw;
+            this.context.viewport.topLeftY = -y + hh;
+        }
     }
 
     onMouseUp($event: MouseEvent): void {
@@ -94,14 +105,15 @@ export class MinimapOverlayComponent implements AfterViewInit, OnDestroy {
 
     onMouseMove($event: MouseEvent): void {
         if (this.dragging) {
-            let x = ($event.clientX - this.dragStart.x) * 64;
-            let y = ($event.clientY - this.dragStart.y) * 64;
+            let x = ($event.offsetX - this.dragStart.x) * 64;
+            let y = ($event.offsetY - this.dragStart.y) * 64;
 
-            console.log(x, y);
+            this.dragStart.x = $event.offsetX;
+            this.dragStart.y = $event.offsetY;
 
             if (this.context) {
-                this.context.viewport.topLeftX = Math.floor(x - this.context.viewport.topLeftX);
-                this.context.viewport.topLeftY = Math.floor(y - this.context.viewport.topLeftY);
+                this.context.viewport.topLeftX = this.context.viewport.topLeftX - x;
+                this.context.viewport.topLeftY = this.context.viewport.topLeftY - y;
             }
         }
     }
