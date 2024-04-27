@@ -44,8 +44,9 @@ export class LvlViewerComponent implements AfterViewInit {
             if (this.context && this.context.file) {
                 bounds.width = element.offsetWidth;
                 bounds.height = element.offsetHeight;
+                this.context.viewport.width = bounds.width;
+                this.context.viewport.height = bounds.height;
             }
-            
         }
 
         return bounds;
@@ -77,13 +78,21 @@ export class LvlViewerComponent implements AfterViewInit {
             context: this.context,
         }, [offscreenTerrainCanvas, offscreenObjectCanvas]);
 
-        this.renderWorker.onmessage = ({type: string}) => {
-            this.canRender = true;
-            this.renderWorker?.postMessage({
-                type: 'startrender',
-                bounds: this.bounds
-            });
-            this.render();
+        this.renderWorker.onmessage = (message: MessageEvent) => {
+            if (message.data.type === 'loaded') {
+                this.canRender = true;
+                this.renderWorker?.postMessage({
+                    type: 'startrender',
+                    bounds: this.bounds
+                });
+
+                this.render();
+                this.renderWorker?.postMessage({type: 'renderminimap'});
+            } else if (message.data.type === 'minimap') {
+                if (this.context) {
+                    this.context.minimapBitmap = message.data.bitmap;
+                }
+            }
         };
     }
 

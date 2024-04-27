@@ -166,14 +166,11 @@ class Renderer {
     let totalWidth = tileWidth * 16;
     let totalHeight = tileHeight * 16;
 
-    let canvasesX = Math.ceil(totalWidth / this.floorCanvasSize);
-    let canvasesY = Math.ceil(totalHeight / this.floorCanvasSize);
+    this.canvasesWidth = Math.ceil(totalWidth / this.floorCanvasSize);
+    this.canvasesHeight = Math.ceil(totalHeight / this.floorCanvasSize);
 
-    this.canvasesWidth = canvasesX;
-    this.canvasesHeight = canvasesY;
-
-    for (let x = 0; x < canvasesX; x++) {
-      for (let y = 0; y < canvasesY; y++) {
+    for (let x = 0; x < this.canvasesWidth; x++) {
+      for (let y = 0; y < this.canvasesHeight; y++) {
         this.floorCanvases.push(new OffscreenCanvas(this.floorCanvasSize, this.floorCanvasSize));
       }
     }
@@ -183,7 +180,7 @@ class Renderer {
         let canvasX = Math.floor((x * 16) / this.floorCanvasSize);
         let canvasY = Math.floor((y * 16) / this.floorCanvasSize);
 
-        let canvas = this.floorCanvases[(canvasY * canvasesX) + canvasX];
+        let canvas = this.floorCanvases[(canvasY * this.canvasesWidth) + canvasX];
 
         let ctx = canvas.getContext('2d');
 
@@ -348,6 +345,31 @@ class Renderer {
       self.requestAnimationFrame(() => this.render());
     }
   }
+
+  renderMinimap(): ImageBitmap | null {
+    let minimapCanvas = new OffscreenCanvas(512, 512);
+    let ctx = minimapCanvas.getContext('2d');
+
+    if (!ctx) {
+      return null;
+    }
+
+    // The minimap canvas is 512; the largest a map can be is 2048x2048 (32768px x 32768px)
+    // therefore our scaling factor is 64.
+
+    ctx.clearRect(0, 0, 512, 512);
+    ctx.scale(1 / 64, 1 / 64);
+
+    for(let x = 0; x < this.canvasesWidth; x++) {
+      for (let y = 0; y < this.canvasesHeight; y++) {
+        let canvas = this.floorCanvases[(y * this.canvasesWidth) + x];
+
+        ctx.drawImage(canvas, x * this.floorCanvasSize, y * this.floorCanvasSize);
+      }
+    }
+
+    return minimapCanvas.transferToImageBitmap();
+  }
 }
 
 let renderer = new Renderer();
@@ -371,7 +393,7 @@ addEventListener('message', async ({ data }) => {
       renderer.canvasHeight = bounds.height;
     }
     renderer.rendering = true;
-    renderer.render();
+    renderer.render(); 
   }
   else if (data.type === 'updaterender') {
     let bounds = data.bounds;
@@ -382,6 +404,13 @@ addEventListener('message', async ({ data }) => {
       renderer.canvasWidth = bounds.width;
       renderer.canvasHeight = bounds.height;
     }
+  } else if (data.type === 'renderminimap') {
+    let bitmap = renderer.renderMinimap();
+
+    if (bitmap) {
+      self.postMessage({type: 'minimap', bitmap: bitmap}, {transfer: [bitmap]});
+    }
+
   } else if (data.type === 'stoprender') {
     renderer.rendering = false;
   }

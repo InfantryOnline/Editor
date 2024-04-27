@@ -34,4 +34,5 @@ export class LevelTabContext implements ITabContext {
     workspace: Workspace = new Workspace();
     viewport: Viewport = new Viewport();
     rendering: boolean = false;
+    minimapBitmap: ImageBitmap | null = null;
 }

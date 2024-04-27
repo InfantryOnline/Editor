@@ -1,0 +1,39 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin import-minimap-overlay($theme) {
+    $primary: mat.get-theme-color($theme, primary, 500);
+
+    .panel {
+        background-color: $primary;
+        border: 2px solid $primary;
+        box-shadow: var(--mdc-extended-fab-container-elevation-shadow);
+    }
+}
+
+@mixin import-directory-typography($config) {
+    .import-shell {
+        font: {
+            family: mat-font-family($config, body-1);
+            size: mat-font-size($config, body-1);
+            weight: mat-font-size($config, body-1);
+        }
+    }
+}
+
+.canvas {
+    background-color: #111;
+    padding: 0; margin: 0;
+}
+
+.canvas, .border {
+    position: absolute;
+}
+
+.panel {
+    width: 512px;
+    height: 512px;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
