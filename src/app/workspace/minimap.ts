@@ -1,15 +1,16 @@
 import { Bounds } from "./bounds";
+import { MAPSIZE_PIXELS, MINIMAP_PIXELS } from "./constants";
 import { Viewport } from "./viewport";
 
 /**
  * Allows for some basic querying and updating of the viewport if we are using the minimap.
  */
 export class Minimap {
-    readonly Width  = 512;
-    readonly Height = 512;
+    readonly Width  = MINIMAP_PIXELS;
+    readonly Height = MINIMAP_PIXELS;
 
-    readonly MinimapScaleX = (32768.0) / this.Width;
-    readonly MinimapScaleY = (32768.0) / this.Height;
+    readonly MinimapScaleX = (MAPSIZE_PIXELS) / this.Width;
+    readonly MinimapScaleY = (MAPSIZE_PIXELS) / this.Height;
 
     constructor(private vp: Viewport) {}
 
