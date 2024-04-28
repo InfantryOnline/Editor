@@ -147,8 +147,8 @@ export class LvlViewerComponent implements AfterViewInit {
         {
             this.context.viewport.scale -= $event.deltaY * scrollSensitivity;
 
-            if (this.context.viewport.scale < 1/4) {
-                this.context.viewport.scale = 1/4;
+            if (this.context.viewport.scale < 1/8) {
+                this.context.viewport.scale = 1/8;
             }
 
             if (this.context.viewport.scale > 2) {
