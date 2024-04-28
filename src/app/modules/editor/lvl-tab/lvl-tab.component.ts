@@ -23,6 +23,8 @@ export class LvlTabComponent {
     minimapPortal?: ComponentPortal<MinimapOverlayComponent>;
     overlayRef?: OverlayRef;
 
+    showPhysics: boolean = false;
+
     onToggleMinimap(): void {
         if (this.overlayRef) {
             this.overlayRef?.dispose();
@@ -56,5 +58,9 @@ export class LvlTabComponent {
 
     onFloorSelect(): void {
 
+    }
+
+    onToggleShowPhysics(checked: boolean): void {
+        this.showPhysics = checked;
     }
 }

@@ -1,4 +1,4 @@
 <div class="container" [class.hidden]="this.context?.loading" (mousedown)="onMouseDown($event)" (mouseup)="onMouseUp($event)" (mousemove)="onMouseMove($event)" (wheel)="onWheel($event)" #container>
     <canvas class="terrain-canvas" #terrainCanvas style="z-index: 0;"></canvas>
-    <canvas class="object-canvas" #objectCanvas style="z-index: 1;"></canvas>
+    <canvas class="object-canvas" #objectCanvas style="z-index: 1;" [class.hidden]="!showPhysics"></canvas>
 </div>

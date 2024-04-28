@@ -12,6 +12,7 @@ import { Directory } from "../../../workspace/directory";
 })
 export class LvlViewerComponent implements AfterViewInit {
     @Input() context: LevelTabContext | null = null;
+    @Input() showPhysics: boolean = false;
 
     @ViewChild('container') container?: ElementRef<HTMLDivElement>;
     @ViewChild('terrainCanvas') terrainCanvas?: ElementRef<HTMLCanvasElement>;
