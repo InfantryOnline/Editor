@@ -63,7 +63,7 @@ export class LvlViewerComponent implements AfterViewInit {
     }
 
     async ngAfterViewInit() {
-        this.renderWorker = new Worker(new URL('./render.worker', import.meta.url));
+        this.renderWorker = new Worker(new URL('./../../../rendering/render.worker', import.meta.url));
 
         if (!this.terrainCanvas || !this.objectCanvas) {
             console.log('Error');
