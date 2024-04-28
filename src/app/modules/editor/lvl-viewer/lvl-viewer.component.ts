@@ -121,8 +121,8 @@ export class LvlViewerComponent implements AfterViewInit {
         if (this.dragging && this.context) {
             var location = this.getEventLocation($event);
 
-            this.context.viewport.topLeftX += (this.dragStart.x - location.x);
-            this.context.viewport.topLeftY += (this.dragStart.y - location.y);
+            this.context.viewport.topLeftX += (this.dragStart.x - location.x) * (1.0 / this.context.viewport.scale);
+            this.context.viewport.topLeftY += (this.dragStart.y - location.y) * (1.0 / this.context.viewport.scale);
 
             this.dragStart = location;
         }
