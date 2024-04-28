@@ -16,9 +16,8 @@ import { CommonModule } from "@angular/common";
 import { BaseEditorComponent } from "./base-editor/base-editor.component";
 import { TreeComponent } from "./tree/tree.component";
 
-
 /**
- * Contains all the angular entities as it relates to the editor.
+ * Contains sharable entities that are used by the rest of the editor.
  */
 @NgModule({
     declarations: [
