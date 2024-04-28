@@ -71,6 +71,15 @@ export class BloTabComponent {
                 this.attributes.push({
                     label: 'Frames',
                     text: `${this.selectedSprite?.frames.length}`
+                }, {
+                    label: 'Rows',
+                    text: `${this.selectedSprite?.header?.rowCount}`
+                }, {
+                    label: 'Columns',
+                    text: `${this.selectedSprite?.header?.columnCount}`
+                }, {
+                    label: 'Animation Time',
+                    text: `${this.selectedSprite?.header?.animationTime}`
                 });
 
                 this.selectedFormat = SupportedBloFormats.Cfs;
