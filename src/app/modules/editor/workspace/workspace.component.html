@@ -22,12 +22,11 @@
 
             @for (tab of tabs; track tab.name; let index = $index)
             {
-                <mat-tab label="{{ tab.name }}">
-                    <button
-                        mat-raised-button
-                        (click)="deleteTab(index)">
-                        Delete
-                    </button>
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        {{ tab.name }} <button mat-icon-button color="primary" (click)="deleteTab(index)"><mat-icon>highlight_remove</mat-icon></button>
+                    </ng-template>
+
                     @switch(tab.type)
                     {
                         @case (TabContextType.Blo)

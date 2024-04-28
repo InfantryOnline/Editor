@@ -138,7 +138,11 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
     }
 
     deleteTab(index: number): void {
-        // add some logic here to prevent deleting tabs with dirty data at some point
+        // NICE: add some logic here to prevent deleting tabs with dirty data at some point
+
+        if (!confirm('Are you sure you want to remove this tab?')) {
+            return;
+        }
 
         if (index >= 0 && index < this.tabs.length) {
             this.tabs.splice(index, 1);

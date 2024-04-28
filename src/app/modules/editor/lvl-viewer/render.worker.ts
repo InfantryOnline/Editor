@@ -7,7 +7,7 @@ import { SpriteFile } from "../../../io/sprite";
 
 class Renderer {
   cfsData: {name: string, frames: any[]}[] = [];
-  context: LevelTabContext | null = null;
+  context: any;
   terrainCanvas: OffscreenCanvas | null = null;
   objectCanvas: OffscreenCanvas | null = null;
   canvasWidth = 0;
@@ -24,7 +24,7 @@ class Renderer {
   objectGridSize = this.floorCanvasSize;
   lastDt: number = 0;
 
-  get directory(): Directory | undefined { return this.context?.workspace.directory; }
+  get directory(): Directory { return this.context.workspace.directory; }
 
   async load() {
     const ctx2d = this.terrainCanvas?.getContext('2d');
