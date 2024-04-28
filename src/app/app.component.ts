@@ -4,6 +4,7 @@ import { PreludeModule } from './modules/prelude/prelude.module';
 import { EditorModule } from './modules/editor/editor.module';
 import { Workspace } from './workspace/workspace';
 import { Directory } from './workspace/directory';
+import { SharedModule } from './modules/shared/shared.module';
 
 /**
  * Provides scaffolding to the application.
@@ -11,7 +12,7 @@ import { Directory } from './workspace/directory';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PreludeModule, EditorModule],
+  imports: [RouterOutlet, PreludeModule, EditorModule, SharedModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })

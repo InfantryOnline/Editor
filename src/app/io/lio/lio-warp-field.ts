@@ -8,7 +8,7 @@ export enum WarpMode {
     SessionMultiple,
 }
 
-export class WarpField extends LioEntry {
+export class LioWarpField extends LioEntry {
     minPlayerCount: number = 0;
     maxPlayerCount: number = 0;
     minPlayersInArea: number = 0;
