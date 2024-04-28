@@ -14,6 +14,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from "@angular/common";
 import { BaseEditorComponent } from "./base-editor/base-editor.component";
+import { TreeComponent } from "./tree/tree.component";
 
 
 /**
@@ -21,11 +22,10 @@ import { BaseEditorComponent } from "./base-editor/base-editor.component";
  */
 @NgModule({
     declarations: [
-        BaseEditorComponent
-    ],
-    imports: [],
-    exports: [
         BaseEditorComponent,
+        TreeComponent
+    ],
+    imports: [
         CommonModule,
         MatTreeModule,
         MatButtonModule,
@@ -39,7 +39,25 @@ import { BaseEditorComponent } from "./base-editor/base-editor.component";
         MatCheckboxModule,
         MatChipsModule,
         OverlayModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+    ],
+    exports: [
+        CommonModule,
+        MatTreeModule,
+        MatButtonModule,
+        MatSidenavModule,
+        MatListModule,
+        MatTabsModule,
+        MatIconModule,
+        MatCardModule,
+        MatToolbarModule,
+        MatDialogModule,
+        MatCheckboxModule,
+        MatChipsModule,
+        OverlayModule,
+        MatProgressSpinnerModule,
+        TreeComponent,
+        BaseEditorComponent,
     ],
 })
 export class SharedModule {
