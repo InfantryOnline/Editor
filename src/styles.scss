@@ -1,9 +1,11 @@
+@use 'sass:map';
 @use "@angular/material" as mat;
 @import "theme/indigo-pink";
 
 @include mat.core();
 
 @import "./app/modules/prelude/import-directory/import-directory.theme";
+@import "./app/modules/editor/workspace/workspace.theme";
 @import "./app/modules/editor/minimap-overlay//minimap-overlay.component";
 @import "./app/modules/shared/tree/tree.theme";
 
@@ -18,9 +20,22 @@ $theme: mat.define-light-theme((color: (primary: $primary, accent: $accent), typ
 @include import-directory-theme($theme);
 @include import-minimap-overlay($theme);
 @include import-tree-theme($theme);
+@include import-workspace-theme($theme);
 
 /* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
- 
+.mat-drawer-inner-container {
+    &::-webkit-scrollbar {
+        width: 4px;
+        overflow-y: scroll;
+        background: map.get($mat-indigo, 50);
+        box-shadow: inset 0 0 4px #707070;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+        background: map.get($mat-indigo, 300);
+        border-radius: 10px;
+    }
+}

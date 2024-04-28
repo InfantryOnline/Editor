@@ -1,0 +1,8 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin import-workspace-theme($theme) {
+    $primary: mat.get-theme-color($theme, primary, 500);
+
+    
+}
