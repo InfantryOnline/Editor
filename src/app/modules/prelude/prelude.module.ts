@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { ImportDirectoryComponent } from "./import-directory/import-directory.component";
 import { MatButtonModule } from '@angular/material/button';
+import {MatIconModule} from '@angular/material/icon';
 
 /**
  * Prelude module contains all the Angular elements that are generally used prior to the
@@ -9,7 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 @NgModule({
     declarations: [ImportDirectoryComponent],
     exports: [ImportDirectoryComponent],
-    imports: [MatButtonModule]
+    imports: [MatButtonModule, MatIconModule]
 })
 export class PreludeModule {
 
