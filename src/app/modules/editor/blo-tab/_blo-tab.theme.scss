@@ -1,0 +1,15 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+
+@mixin import-blo-tab-theme($theme) {
+    $primary: mat.get-theme-color($theme, primary, 300);
+
+    .attribute {
+        border: 2px solid $primary;
+
+        .attribute-label {
+            background-color: $primary;
+            color: #fff;
+        }
+    }
+}

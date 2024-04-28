@@ -20,9 +20,9 @@
                 <div class="details">
                     <div style="margin-bottom: 20px;">
                         <mat-chip-set>
-                            <mat-chip class="attribute"><strong>Name:</strong> {{ selectedEntry.name }}</mat-chip>
-                            <mat-chip class="attribute"><strong>Offset:</strong> {{ selectedEntry.offset }}</mat-chip>
-                            <mat-chip class="attribute"><strong>Length:</strong> {{ selectedEntry.length }}</mat-chip>
+                            <mat-basic-chip class="attribute"><span class="attribute-label">Name</span><span class="attribute-content">{{ selectedEntry.name }}</span></mat-basic-chip>
+                            <mat-basic-chip class="attribute"><span class="attribute-label">Offset</span><span class="attribute-content">{{ selectedEntry.offset }}</span></mat-basic-chip>
+                            <mat-basic-chip class="attribute"><span class="attribute-label">Length</span><span class="attribute-content">{{ selectedEntry.length }}</span></mat-basic-chip>
                         </mat-chip-set>
                     </div>
                     @if (selectedSprite)
