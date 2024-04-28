@@ -151,11 +151,11 @@ class Renderer {
           }
       }
 
-      this.initializeFloorCanvases();
       this.initializeObjectGrid();
+      this.initializeCanvasGrid();
   }
 
-  initializeFloorCanvases(): void {
+  initializeCanvasGrid(): void {
     if (!this.context  || !this.context.file) {
       return;
     }
@@ -175,6 +175,8 @@ class Renderer {
         this.floorCanvases.push(new OffscreenCanvas(this.floorCanvasSize, this.floorCanvasSize));
       }
     }
+
+    // Render floors.
 
     for (let x = 0; x < tileWidth; x++) {
       for (let y = 0; y < tileHeight; y++) {
@@ -210,6 +212,32 @@ class Renderer {
         ctx.fillRect(pX, pY, 16, 16);
       }
     }
+
+    // Render objects (TODO: Transparencies, shadow layers, all that fun stuff.)
+
+    for (let x = 0; x < this.canvasesWidth; x++) {
+      for (let y = 0; y < this.canvasesHeight; y++) {
+        let objectGridEntry = this.objectGrid[(y * this.canvasesWidth) + x];
+        let canvas = this.floorCanvases[(y * this.canvasesWidth) + x];
+        let ctx = canvas.getContext('2d');
+
+        let TLX = x * this.floorCanvasSize;
+        let TLY = y * this.floorCanvasSize;
+
+        if (!ctx) {
+          throw new Error('Unable to get context.');
+        }
+
+        for (let entity of objectGridEntry.entities) {
+            let objIndex = entity.bitsA & 0x00001FFF;
+            let frameIndex = (entity.bitsA & 0x000FE000) >> 13;
+            let obj = this.context.file.objects[objIndex];
+            let objImage = this.cfsData.find(c => c.name === `${obj.filename}#${obj.id}`)?.frames[frameIndex];
+
+            ctx.drawImage(objImage.bitmap, (entity.x + objImage.x) - TLX, (entity.y + objImage.y) - TLY);
+        }
+      }
+    }
   }
 
   initializeObjectGrid(): void {
@@ -241,10 +269,25 @@ class Renderer {
     }
 
     for (let entity of  file.entities) {
-      let entityGridX = Math.floor(entity.x / this.objectGridSize);
-      let entityGridY = Math.floor(entity.y / this.objectGridSize);
+      // Because an entity may span multiple grid cells, we will add the entity to all of them. The entity position therefore
+      // may sit "outside" of the grid boundaries, which is fine, because it just means that it will be cut off when it gets
+      // rendered.
+      let objIndex = entity.bitsA & 0x00001FFF;
+      let frameIndex = (entity.bitsA & 0x000FE000) >> 13;
+      let obj = file.objects[objIndex];
+      let objImage = this.cfsData.find(c => c.name === `${obj.filename}#${obj.id}`)?.frames[frameIndex];
 
-      this.objectGrid[(entityGridY * gridX) + entityGridX].entities.push(entity);
+      let gridTLX = Math.floor(entity.x / this.objectGridSize);
+      let gridTLY = Math.floor(entity.y / this.objectGridSize);
+
+      let gridBRX = Math.floor((entity.x + objImage.width) / this.objectGridSize);
+      let gridBRY = Math.floor((entity.y + objImage.height) / this.objectGridSize);
+
+      for (let x = gridTLX; x <= gridBRX; x++) {
+        for (let y = gridTLY; y <= gridBRY; y++) {
+          this.objectGrid[(y * gridX) + x].entities.push(entity);
+        }
+      }
     }
   }
 
@@ -254,10 +297,11 @@ class Renderer {
     if (!this.terrainCanvas || !ctx || !this.context) {
       return;
     }
+    
 
     this.lastDt = dt;
 
-    // Render Floors.
+    // Render the sub-canvases.
 
     if (this.terrainCanvas.width != this.canvasWidth || this.terrainCanvas.height != this.canvasHeight) {
       this.terrainCanvas.width = this.canvasWidth;
@@ -266,29 +310,46 @@ class Renderer {
 
     ctx.resetTransform();
     ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    ctx.translate(this.context.viewport.topLeftX, this.context?.viewport.topLeftY);
 
-    // Note: Game represents each tile as a 16x16 pixel block.
+    // Translate to middle of canvas first, and then zoom in; this ensures that
+    // the zoom's origin is always from the centerpoint of the canvas.
+    ctx.translate(this.canvasWidth / 2, this.canvasHeight / 2)
+    ctx.scale(this.context.viewport.scale, this.context.viewport.scale);
+    ctx.translate((-this.canvasWidth / 2) - this.context.viewport.topLeftX, (-this.canvasHeight / 2) - this.context.viewport.topLeftY);
 
-    let TLX = Math.abs(Math.floor(this.context?.viewport.topLeftX / 16)) - 1;
-    let TLY = Math.abs(Math.floor(this.context?.viewport.topLeftY / 16)) - 1;
-    
-    let BRX = TLX + Math.ceil(this.canvasWidth / 16) + 1;
-    let BRY = TLY + Math.ceil(this.canvasHeight / 16) + 1;
+    // Note: Game represents each tile as a 16x16 pixel block
+
+    // Determine with scaling factor where our top left and bottom right are (in tile units). A clear way to think about it is to
+    // take the midpoint of where our canvas is, and then grow it out in all directions using the scaling factor. Divide by two
+    // to get the half width and half height so that way we can simply subtract to find top left, and add to find bottom right corners.
+
+    let newHW = (this.canvasWidth / this.context.viewport.scale) / 2.0;
+    let newHH = (this.canvasHeight / this.context.viewport.scale) / 2.0;
+  
+    let hwx = this.context.viewport.topLeftX + (this.canvasWidth / 2.0);
+    let hwy = this.context.viewport.topLeftY + (this.canvasHeight / 2.0);
+
+    // Now simply add the new scalingW 
+
+    let TLX = Math.floor((hwx - newHW) / 16) - 1;
+    let TLY = Math.floor((hwy - newHH) / 16) - 1;
+
+    let BRX = Math.ceil((hwx + newHW) / 16) + 1;
+    let BRY = Math.ceil((hwy + newHH) / 16) + 1;
 
     const file = this.context?.file;
     const header = file?.header;
 
     if (!header) {
-        throw new Error('Missing header');
+      throw new Error('Missing header');
     }
 
     if (TLX < 0) {
-        TLX = 0;
+      TLX = 0;
     }
 
     if (TLY < 0) {
-        TLY = 0;
+      TLY = 0;
     }
 
     if (BRX > header.width) {
@@ -305,6 +366,22 @@ class Renderer {
     let brCanvasX = Math.ceil((BRX * 16) / this.floorCanvasSize);
     let brCanvasY = Math.ceil((BRY * 16) / this.floorCanvasSize);
 
+    if (tlCanvasX < 0) {
+      tlCanvasX = 0;
+    }
+
+    if (tlCanvasY < 0) {
+      tlCanvasY = 0;
+    }
+
+    if (brCanvasX > this.canvasesWidth) {
+      brCanvasX = this.canvasesWidth;
+    }
+
+    if (brCanvasY > this.canvasesHeight) {
+      brCanvasY = this.canvasesHeight;
+    }
+
     for (let x = tlCanvasX; x < brCanvasX; x++) { 
       for (let y = tlCanvasY; y < brCanvasY; y++) {
         let offsetX = x * this.floorCanvasSize;
@@ -314,42 +391,44 @@ class Renderer {
       }
     }
 
-    if (this.objectCanvas)
-    {
-      if (this.objectCanvas.width != this.canvasWidth || this.objectCanvas.height != this.canvasHeight) {
-        this.objectCanvas.width = this.canvasWidth;
-        this.objectCanvas.height = this.canvasHeight;
-      }
+    // Render objects
 
-      const ctx = this.objectCanvas.getContext('2d');
+    // if (this.objectCanvas)
+    // {
+    //   if (this.objectCanvas.width != this.canvasWidth || this.objectCanvas.height != this.canvasHeight) {
+    //     this.objectCanvas.width = this.canvasWidth;
+    //     this.objectCanvas.height = this.canvasHeight;
+    //   }
 
-      if (!ctx) {
-        throw new Error();
-      }
+    //   const ctx = this.objectCanvas.getContext('2d');
 
-      ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+    //   if (!ctx) {
+    //     throw new Error();
+    //   }
 
-      let tlGridX = Math.floor((TLX * 16) / this.floorCanvasSize);
-      let tlGridY = Math.floor((TLY * 16) / this.floorCanvasSize);
+    //   ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 
-      let brGridX = Math.ceil((BRX * 16) / this.floorCanvasSize);
-      let brGridY = Math.ceil((BRY * 16) / this.floorCanvasSize);
+    //   let tlGridX = Math.floor((TLX * 16) / this.floorCanvasSize);
+    //   let tlGridY = Math.floor((TLY * 16) / this.floorCanvasSize);
 
-      for (let x = tlGridX; x < brGridX; x++) { 
-        for (let y = tlGridY; y < brGridY; y++) {
-          let grid = this.objectGrid[(y * this.canvasesWidth) + x];
+    //   let brGridX = Math.ceil((BRX * 16) / this.floorCanvasSize);
+    //   let brGridY = Math.ceil((BRY * 16) / this.floorCanvasSize);
 
-          for(let entity of grid.entities) {
-            let objIndex = entity.bitsA & 0x00001FFF;
-            let frameIndex = (entity.bitsA & 0x000FE000) >> 13;
-            let obj = file.objects[objIndex];
-            let objImage = this.cfsData.find(c => c.name === `${obj.filename}#${obj.id}`)?.frames[frameIndex];
+    //   for (let x = tlGridX; x < brGridX; x++) { 
+    //     for (let y = tlGridY; y < brGridY; y++) {
+    //       let grid = this.objectGrid[(y * this.canvasesWidth) + x];
 
-            ctx.drawImage(objImage.bitmap, this.context.viewport.topLeftX + entity.x + objImage.x, this.context.viewport.topLeftY + entity.y + objImage.y);
-          }
-        }
-      }
-    }
+    //       for(let entity of grid.entities) {
+    //         let objIndex = entity.bitsA & 0x00001FFF;
+    //         let frameIndex = (entity.bitsA & 0x000FE000) >> 13;
+    //         let obj = file.objects[objIndex];
+    //         let objImage = this.cfsData.find(c => c.name === `${obj.filename}#${obj.id}`)?.frames[frameIndex];
+
+    //         ctx.drawImage(objImage.bitmap, this.context.viewport.topLeftX + entity.x + objImage.x, this.context.viewport.topLeftY + entity.y + objImage.y);
+    //       }
+    //     }
+    //   }
+    // }
 
     if (this.rendering) {
       self.requestAnimationFrame((dt) => this.render(dt));
@@ -411,6 +490,7 @@ addEventListener('message', async ({ data }) => {
     if (renderer.context) {
       renderer.context.viewport.topLeftX = bounds.x;
       renderer.context.viewport.topLeftY = bounds.y;
+      renderer.context.viewport.scale = bounds.scale;
       renderer.canvasWidth = bounds.width;
       renderer.canvasHeight = bounds.height;
     }

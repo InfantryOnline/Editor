@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { LevelTabContext } from "../../../workspace/tab-context";
 import { MatDialog } from "@angular/material/dialog";
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
@@ -12,8 +12,7 @@ import { MatButton } from "@angular/material/button";
 @Component({
     selector: 'app-lvl-tab',
     templateUrl: './lvl-tab.component.html',
-    styleUrls: ['./lvl-tab.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    styleUrls: ['./lvl-tab.component.scss']
 })
 export class LvlTabComponent {
     @Input() context: LevelTabContext | null = null;

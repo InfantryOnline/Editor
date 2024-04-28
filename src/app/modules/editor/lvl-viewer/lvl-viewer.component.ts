@@ -2,6 +2,9 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular
 import { LevelTabContext } from "../../../workspace/tab-context";
 import { Directory } from "../../../workspace/directory";
 
+/**
+ *
+ */
 @Component({
     selector: 'app-lvl-viewer',
     templateUrl: './lvl-viewer.component.html',
@@ -31,7 +34,8 @@ export class LvlViewerComponent implements AfterViewInit {
             x: this.context.viewport.topLeftX,
             y: this.context.viewport.topLeftY,
             width: 0,
-            height: 0
+            height: 0,
+            scale: this.context.viewport.scale
         };
 
         if (this.container)  {
@@ -64,10 +68,6 @@ export class LvlViewerComponent implements AfterViewInit {
         if (!this.terrainCanvas || !this.objectCanvas) {
             console.log('Error');
             return;
-        }
-
-        if (this.context) {
-            this.context.loading = true;
         }
 
         let offscreenTerrainCanvas = this.terrainCanvas.nativeElement.transferControlToOffscreen();
@@ -120,8 +120,7 @@ export class LvlViewerComponent implements AfterViewInit {
         }
 
         this.dragging = true;
-        this.dragStart.x = this.getEventLocation($event).x / this.context.viewport.zoom - this.context.viewport.topLeftX;
-        this.dragStart.y = this.getEventLocation($event).y / this.context.viewport.zoom - this.context.viewport.topLeftY;
+        this.dragStart = this.getEventLocation($event);
     }
 
     onMouseUp($event: MouseEvent) {
@@ -132,8 +131,12 @@ export class LvlViewerComponent implements AfterViewInit {
 
     onMouseMove($event: MouseEvent) {
         if (this.dragging && this.context) {
-            this.context.viewport.topLeftX = this.getEventLocation($event).x / this.context.viewport.zoom - this.dragStart.x;
-            this.context.viewport.topLeftY = this.getEventLocation($event).y / this.context.viewport.zoom - this.dragStart.y;
+            var location = this.getEventLocation($event);
+
+            this.context.viewport.topLeftX += (this.dragStart.x - location.x) * (1.0 / this.context.viewport.scale);
+            this.context.viewport.topLeftY += (this.dragStart.y - location.y) * (1.0 / this.context.viewport.scale);
+
+            this.dragStart = location;
         }
     }
 
@@ -142,12 +145,20 @@ export class LvlViewerComponent implements AfterViewInit {
 
         if (this.context)
         {
-            this.context.viewport.zoom += $event.deltaY * scrollSensitivity;
+            this.context.viewport.scale -= $event.deltaY * scrollSensitivity;
+
+            if (this.context.viewport.scale < 1/4) {
+                this.context.viewport.scale = 1/4;
+            }
+
+            if (this.context.viewport.scale > 2) {
+                this.context.viewport.scale = 2;
+            }
         }
     }
 
     getEventLocation($event: MouseEvent) {
-        return {x: $event.clientX, y: $event.clientY};
+        return {x: $event.offsetX, y: $event.offsetY};
     }
 
     render(): void {
