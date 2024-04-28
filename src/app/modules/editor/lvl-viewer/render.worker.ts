@@ -234,6 +234,11 @@ class Renderer {
             let obj = this.context.file.objects[objIndex];
             let objImage = this.cfsData.find(c => c.name === `${obj.filename}#${obj.id}`)?.frames[frameIndex];
 
+            if (objImage.width === 0 || objImage.height === 0) {
+              console.log('Warning: zero width/height bitmap: ', obj, objImage);
+              continue;
+            }
+
             ctx.drawImage(objImage.bitmap, (entity.x + objImage.x) - TLX, (entity.y + objImage.y) - TLY);
         }
       }
