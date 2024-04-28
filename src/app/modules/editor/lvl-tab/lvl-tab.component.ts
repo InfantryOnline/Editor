@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { LevelTabContext } from "../../../workspace/tab-context";
 import { MatDialog } from "@angular/material/dialog";
 import { Overlay, OverlayRef } from "@angular/cdk/overlay";
@@ -12,7 +12,8 @@ import { MatButton } from "@angular/material/button";
 @Component({
     selector: 'app-lvl-tab',
     templateUrl: './lvl-tab.component.html',
-    styleUrls: ['./lvl-tab.component.scss']
+    styleUrls: ['./lvl-tab.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LvlTabComponent {
     @Input() context: LevelTabContext | null = null;
@@ -41,11 +42,11 @@ export class LvlTabComponent {
                     overlayX: 'start',
                     overlayY: 'bottom',
                   }]);
-    
+
                 this.overlayRef = this.overlay.create({positionStrategy: positionStrategy});
                 this.minimapPortal = new ComponentPortal(MinimapOverlayComponent);
                 const componentRef = this.overlayRef.attach(this.minimapPortal);
-    
+
                 if (this.context) {
                     componentRef.instance.minimapImage = this.context.minimapBitmap;
                     componentRef.instance.context = this.context;
