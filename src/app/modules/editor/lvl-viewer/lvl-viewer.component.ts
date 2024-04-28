@@ -57,7 +57,7 @@ export class LvlViewerComponent implements AfterViewInit {
             throw new Error('Missing context.');
         }
 
-        return this.context.workspace.directory;
+        return this.context.workspace.directory$.value;
     }
 
     async ngAfterViewInit() {
@@ -129,7 +129,7 @@ export class LvlViewerComponent implements AfterViewInit {
 
     onWheel($event: WheelEvent) {
         let scrollSensitivity = 0.0005;
-        
+
         if (this.context)
         {
             this.context.viewport.zoom += $event.deltaY * scrollSensitivity;
@@ -141,7 +141,7 @@ export class LvlViewerComponent implements AfterViewInit {
     }
 
     render(): void {
-        if (!this.context) {           
+        if (!this.context) {
             return;
         }
 

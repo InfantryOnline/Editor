@@ -6,7 +6,7 @@ import { Workspace } from './workspace/workspace';
 import { Directory } from './workspace/directory';
 
 /**
- * Provides scaffolding to the application. 
+ * Provides scaffolding to the application.
  */
 @Component({
   selector: 'app-root',
@@ -21,7 +21,7 @@ export class AppComponent {
   workspace: Workspace = new Workspace();
 
   onDirectorySelected($event: Directory) {
-    this.workspace.directory = $event;
+    this.workspace.directory$.next($event);
     this.state = 'Editor';
   }
 

@@ -1,6 +1,11 @@
 <mat-drawer-container autosize class="workspace">
     <mat-drawer #drawer class="sidenav" mode="side" [opened]="true">
-        <app-directory [directory]="workspace.directory" (bloSelected)="onBloSelected($event)" (lvlSelected)="onLvlSelected($event)"></app-directory>
+        <app-directory
+            [directory$]="workspace.directory$"
+            (bloSelected)="onBloSelected($event)"
+            (lvlSelected)="onLvlSelected($event)"
+            (lioSelected)="onLioSelected($event)">
+        </app-directory>
     </mat-drawer>
     <div>
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" [(selectedIndex)]="selectedTabIndex" #tabGroup>
@@ -15,9 +20,14 @@
                 </div>
             </mat-tab>
 
-            @for (tab of tabs; track tab.name)
+            @for (tab of tabs; track tab.name; let index = $index)
             {
                 <mat-tab label="{{ tab.name }}">
+                    <button
+                        mat-raised-button
+                        (click)="deleteTab(index)">
+                        Delete
+                    </button>
                     @switch(tab.type)
                     {
                         @case (TabContextType.Blo)
@@ -27,6 +37,10 @@
                         @case (TabContextType.Lvl)
                         {
                             <app-lvl-tab [context]="asLevelContext(tab)"></app-lvl-tab>
+                        }
+                        @case (TabContextType.Lio)
+                        {
+                            <app-lio-tab [context]="asLioContext(tab)"></app-lio-tab>
                         }
                     }
                 </mat-tab>

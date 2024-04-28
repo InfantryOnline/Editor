@@ -1,5 +1,6 @@
 import { BlobFile } from "../io/blo";
 import { LevelFile } from "../io/level";
+import { LioFile } from "../io/lio/lio";
 import { Viewport } from "./viewport";
 import { Workspace } from "./workspace";
 
@@ -36,4 +37,12 @@ export class LevelTabContext implements ITabContext {
     viewport: Viewport = new Viewport();
     rendering: boolean = false;
     minimapBitmap: ImageBitmap | null = null;
+}
+
+export class LioTabContext implements ITabContext {
+    readonly type: TabContextType = TabContextType.Lio;
+    name: string = '';
+    file: LioFile | null = null;
+    workspace: Workspace = new Workspace();
+    rendering: boolean = false;
 }
