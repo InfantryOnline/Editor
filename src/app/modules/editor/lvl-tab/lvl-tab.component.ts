@@ -41,11 +41,11 @@ export class LvlTabComponent {
                     overlayX: 'start',
                     overlayY: 'bottom',
                   }]);
-    
+
                 this.overlayRef = this.overlay.create({positionStrategy: positionStrategy});
                 this.minimapPortal = new ComponentPortal(MinimapOverlayComponent);
                 const componentRef = this.overlayRef.attach(this.minimapPortal);
-    
+
                 if (this.context) {
                     componentRef.instance.minimapImage = this.context.minimapBitmap;
                     componentRef.instance.context = this.context;

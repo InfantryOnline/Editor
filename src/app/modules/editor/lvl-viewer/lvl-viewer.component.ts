@@ -1,9 +1,9 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from "@angular/core";
+import { AfterViewInit, Component, ElementRef, Input, ViewChild } from "@angular/core";
 import { LevelTabContext } from "../../../workspace/tab-context";
 import { Directory } from "../../../workspace/directory";
 
 /**
- * 
+ *
  */
 @Component({
     selector: 'app-lvl-viewer',
@@ -59,7 +59,7 @@ export class LvlViewerComponent implements AfterViewInit {
             throw new Error('Missing context.');
         }
 
-        return this.context.workspace.directory;
+        return this.context.workspace.directory$.value;
     }
 
     async ngAfterViewInit() {
@@ -73,11 +73,23 @@ export class LvlViewerComponent implements AfterViewInit {
         let offscreenTerrainCanvas = this.terrainCanvas.nativeElement.transferControlToOffscreen();
         let offscreenObjectCanvas = this.objectCanvas.nativeElement.transferControlToOffscreen();
 
+        const context = {
+            file: this.context?.file,
+            loading: this.context?.loading,
+            minimapBitmap: this.context?.minimapBitmap,
+            name: this.context?.name,
+            rendering: this.context?.rendering,
+            viewport: this.context?.viewport,
+            workspace: {
+                directory: this.context?.workspace.directory$.value
+            }
+        }
+
         this.renderWorker.postMessage({
             type: 'load',
             terrainCanvas: offscreenTerrainCanvas,
             objectCanvas: offscreenObjectCanvas,
-            context: this.context,
+            context: context,
         }, [offscreenTerrainCanvas, offscreenObjectCanvas]);
 
         this.renderWorker.onmessage = (message: MessageEvent) => {
@@ -130,7 +142,7 @@ export class LvlViewerComponent implements AfterViewInit {
 
     onWheel($event: WheelEvent) {
         let scrollSensitivity = 0.0005;
-        
+
         if (this.context)
         {
             this.context.viewport.scale -= $event.deltaY * scrollSensitivity;
@@ -150,7 +162,7 @@ export class LvlViewerComponent implements AfterViewInit {
     }
 
     render(): void {
-        if (!this.context) {           
+        if (!this.context) {
             return;
         }
 

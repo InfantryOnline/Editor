@@ -23,7 +23,7 @@ export class BloTabComponent {
 
     async onEntrySelected(entry: IBlobEntry) {
         if (this.blo) {
-            let file = this.context?.workspace.directory.bloFiles.find(b => b.name === this.context?.name);
+            let file = this.context?.workspace.directory$.value.bloFiles.find(b => b.name === this.context?.name);
             let buffer = await file?.arrayBuffer();
 
             this.selectedEntry = entry;
@@ -36,7 +36,7 @@ export class BloTabComponent {
                     spriteFile.deserialize(spriteBuffer);
                     this.selectedSprite = spriteFile;
                 }
-            }            
+            }
         }
     }
 }
