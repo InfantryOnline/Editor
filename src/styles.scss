@@ -5,6 +5,7 @@
 
 @import "./app/modules/prelude/import-directory/import-directory.theme";
 @import "./app/modules/editor/minimap-overlay//minimap-overlay.component";
+@import "./app/modules/shared/tree/tree.theme";
 
 // Include all theme styles for the components.
 // Define a theme.
@@ -16,6 +17,7 @@ $theme: mat.define-light-theme((color: (primary: $primary, accent: $accent), typ
 @include mat.all-component-themes($theme);
 @include import-directory-theme($theme);
 @include import-minimap-overlay($theme);
+@include import-tree-theme($theme);
 
 /* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }

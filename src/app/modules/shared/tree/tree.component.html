@@ -4,12 +4,13 @@
             <button mat-button (click)="onSelectFile(node)">{{node.name}}</button>
         </mat-tree-node>
         <mat-tree-node class="tree-node" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-            <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'Toggle ' + node.name">
+            <button mat-button [attr.aria-label]="'Toggle ' + node.name" matTreeNodeToggle color="primary">
                 <mat-icon class="mat-icon-rtl-mirror">
                     {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
                 </mat-icon>
+
+                {{node.name}}
             </button>
-            <strong>{{node.name}}</strong>
         </mat-tree-node>
     </mat-tree>
 </div>
