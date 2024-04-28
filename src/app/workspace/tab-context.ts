@@ -1,5 +1,6 @@
 import { BlobFile } from "../io/blo";
 import { LevelFile } from "../io/level";
+import { Minimap } from "./minimap";
 import { Viewport } from "./viewport";
 import { Workspace } from "./workspace";
 
@@ -9,6 +10,7 @@ export enum TabContextType {
     Itm,
     Veh,
     Lio,
+    Rpg,
     Cfg
 }
 
@@ -34,6 +36,14 @@ export class LevelTabContext implements ITabContext {
     loading: boolean = false;
     workspace: Workspace = new Workspace();
     viewport: Viewport = new Viewport();
+    minimap: Minimap = new Minimap(this.viewport);
     rendering: boolean = false;
     minimapBitmap: ImageBitmap | null = null;
+}
+
+export class RpgTabContext implements ITabContext {
+    readonly type: TabContextType = TabContextType.Rpg;
+    name: string = '';
+    workspace: Workspace = new Workspace();
+    rendering: boolean = false;
 }

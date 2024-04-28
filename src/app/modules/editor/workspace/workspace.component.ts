@@ -70,6 +70,7 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
             context.name = $event.name;
             context.file = lvl;
             context.workspace = this.workspace;
+            context.loading = true;
 
             this.tabs.push(context);
 
