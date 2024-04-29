@@ -1,6 +1,6 @@
 import { BlobFile } from "../io/blo";
 import { LevelFile } from "../io/level";
-import { LioFile } from "../io/lio/lio";
+import { LioFile } from "../io/lio/lio-file";
 import { Minimap } from "./minimap";
 import { Viewport } from "./viewport";
 import { Workspace } from "./workspace";

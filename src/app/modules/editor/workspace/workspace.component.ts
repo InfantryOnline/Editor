@@ -5,7 +5,8 @@ import { MatDrawer } from "@angular/material/sidenav";
 import { BlobFile } from "../../../io/blo";
 import { LevelFile } from "../../../io/level";
 import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, TabContextType } from "../../../workspace/tab-context";
-import { LioFile } from "../../../io/lio/lio";
+import { NgxCsvParser } from "ngx-csv-parser";
+import { LioFile } from "../../../io/lio/lio-file";
 
 /**
  * Contains the large blocks of the editor, i.e. the workspace.
@@ -25,6 +26,8 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
     tabs: ITabContext[] = [];
 
     TabContextType = TabContextType;
+
+    constructor(private ngxCsvParser: NgxCsvParser) { }
 
     ngOnInit(): void {
 
@@ -86,11 +89,11 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
 
         if (idx === -1) {
             const reader: FileReader = new FileReader();
-
             reader.onload = () => {
                 if (reader.result) {
                     let lio = new LioFile();
-                    lio.parse(reader.result.toString());
+                    const csvData = this.ngxCsvParser.csvStringToArray(reader.result.toString(), ",");
+                    lio.assignEntries(csvData);
 
                     let context = new LioTabContext();
                     context.name = $event.name;

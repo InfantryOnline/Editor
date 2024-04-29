@@ -13,9 +13,9 @@ export enum LioType {
 
 export interface ILioEntry {
     type: LioType;
-    name: string;
-    id: number;
     version: string;
+    id: number;
+    name: string;
     offsetX: number;
     offsetY: number;
     width: number;
@@ -24,11 +24,11 @@ export interface ILioEntry {
     huntFrequency: number;
 }
 
-export class LioEntry {
+export class LioEntry implements ILioEntry {
     type: LioType;
-    name: string;
-    id: number;
     version: string;
+    id: number;
+    name: string;
     offsetX: number;
     offsetY: number;
     width: number;
@@ -38,40 +38,14 @@ export class LioEntry {
 
     constructor(type: LioType) {
         this.type = type;
-        this.name = "";
-        this.id = 0;
         this.version = "";
+        this.id = 0;
+        this.name = "";
         this.offsetX = 0;
         this.offsetY = 0;
         this.width = 0;
         this.height = 0;
         this.relativeId = 0;
         this.huntFrequency = 0;
-    }
-}
-
-export class Text extends LioEntry {
-    color: number;
-    frequency: number;
-    text: string;
-
-    constructor() {
-        super(LioType.Text);
-        this.color = 0;
-        this.frequency = 0;
-        this.text = "";
-    }
-}
-
-export class LioFile {
-    entries: ILioEntry[];
-
-    constructor() {
-        this.entries = [];
-    }
-
-    parse(csvString: string): void {
-        // use parse stuff here
-        console.log(csvString);
     }
 }

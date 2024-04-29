@@ -42,7 +42,22 @@ export class LioFlag extends LioEntry {
     flagRelativeId: number = 0;
     skillLogic: string = "";
 
-    flagDroppableTerrains: number[] = [];
+    flagTerrainSettingsTerrain0: number = 0;
+    flagTerrainSettingsTerrain1: number = 0;
+    flagTerrainSettingsTerrain2: number = 0;
+    flagTerrainSettingsTerrain3: number = 0;
+    flagTerrainSettingsTerrain4: number = 0;
+    flagTerrainSettingsTerrain5: number = 0;
+    flagTerrainSettingsTerrain6: number = 0;
+    flagTerrainSettingsTerrain7: number = 0;
+    flagTerrainSettingsTerrain8: number = 0;
+    flagTerrainSettingsTerrain9: number = 0;
+    flagTerrainSettingsTerrain10: number = 0;
+    flagTerrainSettingsTerrain11: number = 0;
+    flagTerrainSettingsTerrain12: number = 0;
+    flagTerrainSettingsTerrain13: number = 0;
+    flagTerrainSettingsTerrain14: number = 0;
+    flagTerrainSettingsTerrain15: number = 0;
 
     nonFlagOwnerSpecialRadius: number = 0;
     nonFlagOwnerSpecialHealRate: number = 0;
