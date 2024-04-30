@@ -5,6 +5,91 @@ const CSV_PREDICATE = '__csv_predicate__';
 
 type FieldPredicate<T> = (obj: T) => boolean;
 
+function create<T>(type: (new () => T)): T {
+    return new type();
+}
+
+/**
+ * Decorator used to aid in parsing CSV lines/objects. Since the properties of a JavaScript
+ * object do not have a definite order, this will help ensure that there is an order.
+ * 
+ * @param index 
+ * @returns 
+ */
+export function Field(index: number) {
+    return function (target: Object, propertyKey: string) {
+        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
+            (target.constructor as any)[CSV_PROP] :
+            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+
+        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
+
+        if (entry) {
+            entry[CSV_INDEX] = index;
+        } else {
+            meta.push({
+                propertyKey: propertyKey,
+                [CSV_INDEX]: index
+            });
+        }
+    }
+}
+
+/**
+ * Added decorator, treat the field as an array field with a given length.
+ * 
+ * @param type 
+ * @param length 
+ * @returns 
+ */
+export function ArrayField<T>(type : (new() => T), length: number) {
+    return function (target: Object, propertyKey: string) {
+        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
+            (target.constructor as any)[CSV_PROP] :
+            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+
+        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
+
+        if (entry) {
+            entry[CSV_ARRAYLENGTH] = length;
+            entry.create = () => create<T>(type);
+        } else {
+            meta.push({
+                propertyKey: propertyKey,
+                [CSV_ARRAYLENGTH]: length,
+                create: () => create<T>(type)
+            });
+        }
+    }
+}
+
+/**
+ * Added decorator, treat the field as a predicate such that if two or more of the same
+ * column index are found, the field whose predicate first evaluates to true will be
+ * used for the parsing operation.
+ * 
+ * @param predicate
+ * @returns 
+ */
+export function FieldPredicate<T>(predicate: FieldPredicate<T>) {
+    return function (target: Object, propertyKey: string) {
+        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
+            (target.constructor as any)[CSV_PROP] :
+            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+
+        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
+
+        if (entry) {
+            entry[CSV_PREDICATE] = predicate;
+        } else {
+            meta.push({
+                propertyKey: propertyKey,
+                [CSV_PREDICATE]: predicate
+            });
+        }
+    }
+}
+
 export abstract class CsvFragment {
     parse(row: any): number {
         let columns: number = 0;
@@ -28,6 +113,10 @@ export abstract class CsvFragment {
                 // Two or more properties map to the same index, so we will evaluate their predicates
                 // and return the first that returns true.
                 prop = props.find((p:any) => p[CSV_PREDICATE](this));
+
+                if (!prop) {
+                    throw new Error('Unable to satisfy predicate for CSV branching.');
+                }
             }
 
             prop = prop || props[0];
@@ -51,7 +140,7 @@ export abstract class CsvFragment {
                     columns++;
                     break;
 
-                case 'object': // Array, but double check.
+                case 'object':
                     if (prop[CSV_ARRAYLENGTH] !== undefined) {
                         i--;
                         
@@ -65,7 +154,7 @@ export abstract class CsvFragment {
                         }
                         columns++;
                     } else {
-                        throw new Error(`Encountered an object but not an array ${t}`);
+                        throw new Error(`Encountered an object but not an array ${t}. Sub-objects are not implemented yet.`);
                     }
                     break;
                 default:
@@ -74,53 +163,5 @@ export abstract class CsvFragment {
         }
 
         return columns;
-    }
-}
-
-function create<T>(type: (new () => T)): T {
-    return new type();
-}
-
-/**
- * Decorator used to aid in parsing CSV lines/objects. Since the properties of a JavaScript
- * object do not have a definite order, this will help ensure that there is an order.
- */
-export function Field(index: number) {
-    return function (target: Object, propertyKey: string) {
-        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
-            (target.constructor as any)[CSV_PROP] :
-            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
-
-        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
-
-        if (entry) {
-            entry[CSV_INDEX] = index;
-        } else {
-            meta.push({
-                propertyKey: propertyKey,
-                [CSV_INDEX]: index
-            });
-        }
-    }
-}
-
-export function ArrayField<T>(type : (new() => T), length: number) {
-    return function (target: Object, propertyKey: string) {
-        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
-            (target.constructor as any)[CSV_PROP] :
-            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
-
-        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
-
-        if (entry) {
-            entry[CSV_ARRAYLENGTH] = length;
-            entry.create = () => create<T>(type);
-        } else {
-            meta.push({
-                propertyKey: propertyKey,
-                [CSV_ARRAYLENGTH]: length,
-                create: () => create<T>(type)
-            });
-        }
     }
 }
