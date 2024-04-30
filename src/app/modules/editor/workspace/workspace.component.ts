@@ -6,6 +6,7 @@ import { BlobFile } from "../../../io/blo";
 import { LevelFile } from "../../../io/level";
 import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, TabContextType } from "../../../workspace/tab-context";
 import { LioFile } from "../../../io/lio/lio";
+import { RpgFile } from "../../../io/rpg";
 
 /**
  * Contains the large blocks of the editor, i.e. the workspace.
@@ -113,6 +114,13 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
         } else  {
             this.selectedTabIndex = idx + 1;
         }
+    }
+
+    async onRpgSelected($event: File) { 
+        let buffer = await $event.arrayBuffer();
+
+        let entry = new RpgFile();
+        entry.parse(buffer);
     }
 
     asBlobContext(tab : ITabContext): BlobTabContext {

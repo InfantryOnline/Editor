@@ -7,6 +7,7 @@ export class Directory {
     readonly ItemFileSuffix = '.itm';
     readonly VehFileSuffix = '.veh';
     readonly LioFileSuffix = '.lio';
+    readonly RpgFileSuffix = '.rpg';
 
     files: File[] = [];
 
@@ -28,5 +29,9 @@ export class Directory {
 
     get lioFiles(): File[] {
         return this.files.filter(t => t.name.endsWith(this.LioFileSuffix));
+    }
+
+    get rpgFiles(): File[] {
+        return this.files.filter(t => t.name.endsWith(this.RpgFileSuffix));
     }
 }

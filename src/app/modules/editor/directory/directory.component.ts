@@ -6,11 +6,13 @@ import { TreeNode, BuildTree } from "../../shared/models/tree";
 const lvlFilesTitle = "Lvl Files";
 const bloFilesTitle = "Blo Files";
 const lioFilesTitle = "Lio Files";
+const rpgFilesTitle = "Rpg Files";
 
 const initialTreeData: TreeNode<File>[] = [
     { name: lvlFilesTitle, value: undefined, children: [] },
     { name: bloFilesTitle, value: undefined, children: [] },
     { name: lioFilesTitle, value: undefined, children: [] },
+    { name: rpgFilesTitle, value: undefined, children: [] },
 ];
 
 @Component({
@@ -24,6 +26,7 @@ export class DirectoryComponent implements OnInit {
     @Output() bloSelected: EventEmitter<File> = new EventEmitter<File>();
     @Output() lvlSelected: EventEmitter<File> = new EventEmitter<File>();
     @Output() lioSelected: EventEmitter<File> = new EventEmitter<File>();
+    @Output() rpgSelected: EventEmitter<File> = new EventEmitter<File>();
 
     fileTreeData$ = new BehaviorSubject<TreeNode<File>[]>(initialTreeData);
 
@@ -43,17 +46,21 @@ export class DirectoryComponent implements OnInit {
             this.bloSelected.emit(node.value);
         } else if (node.name.endsWith(this.directory$.value.LioFileSuffix)) {
             this.lioSelected.emit(node.value);
+        } else if (node.name.endsWith(this.directory$.value.RpgFileSuffix)) {
+            this.rpgSelected.emit(node.value);
         }
     }
 
     buildTrees(): void {
         this.fileTreeData$.value.forEach(treeBranch => {
-            if (treeBranch.name == lioFilesTitle) {
+            if (treeBranch.name === lioFilesTitle) {
                 BuildTree(treeBranch, this.directory$.value.lioFiles);
-            } else if (treeBranch.name == bloFilesTitle) {
+            } else if (treeBranch.name === bloFilesTitle) {
                 BuildTree(treeBranch, this.directory$.value.bloFiles);
-            } else if (treeBranch.name == lvlFilesTitle) {
+            } else if (treeBranch.name === lvlFilesTitle) {
                 BuildTree(treeBranch, this.directory$.value.lvlFiles);
+            } else if(treeBranch.name === rpgFilesTitle) {
+                BuildTree(treeBranch, this.directory$.value.rpgFiles);
             }
         });
     }

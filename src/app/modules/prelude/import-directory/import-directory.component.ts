@@ -13,7 +13,7 @@ import { Directory } from "../../../workspace/directory";
 export class ImportDirectoryComponent {
     @Output() directorySelected: EventEmitter<Directory> = new EventEmitter<Directory>();
     
-    onSelectFolder(): void {
+    onSelectFolder(): void {   
         // Would love to use showDirectoryPicker; sadly Firefox doesn't support it yet,
         // so let's go with the old fallback routine.
 
