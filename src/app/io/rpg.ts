@@ -1,4 +1,4 @@
-import { CsvFragment, Field } from './csv/field';
+import { ArrayField, CsvFragment, Field } from './csv/field';
 import * as Papa from 'papaparse';
 
 export enum Resets {
@@ -30,12 +30,13 @@ export class RpgEntry extends CsvFragment {
     defaultVehicleId: number = 0;
 
     @Field(4)
-    resetSkills: number = 0;
+    resetSkills: Resets = Resets.NoSkills;
 
     @Field(5)
     resetInventory: boolean = false;
 
-    @Field<RpgInventoryMutator>(6, RpgInventoryMutator, 16)
+    @Field(6)
+    @ArrayField<RpgInventoryMutator>(RpgInventoryMutator, 16)
     mutators: RpgInventoryMutator[] = [];
 
     @Field(7)
@@ -81,5 +82,7 @@ export class RpgFile {
 
             this.entries.push(entry);
         }
+
+        console.log(this);
     }
 }

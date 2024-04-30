@@ -21,7 +21,9 @@ export abstract class CsvFragment {
             let prop = null;
 
             if (props.length === 0) {
-                throw new Error(`Property not found for index: ${columns}`);
+                console.log(`Warning: CSV Property not found for column: ${columns}`);
+                columns++;
+                continue;
             } else if (props.length > 1) {
                 // Two or more properties map to the same index, so we will evaluate their predicates
                 // and return the first that returns true.
@@ -54,7 +56,7 @@ export abstract class CsvFragment {
                         i--;
                         
                         for (let a =  0; a < prop[CSV_ARRAYLENGTH]; a++) {
-                            let aObj =  prop.new() as CsvFragment;
+                            let aObj =  prop.create() as CsvFragment;
                             let aColumns = aObj.parse(row.slice(i+1));
 
                             obj[prop.propertyKey].push(aObj);
@@ -75,30 +77,50 @@ export abstract class CsvFragment {
     }
 }
 
-function create<T>(type: (new () => T) | undefined): T | undefined {
-    if (type) {
-        return new type();
-    }
-
-    return undefined;
+function create<T>(type: (new () => T)): T {
+    return new type();
 }
 
 /**
  * Decorator used to aid in parsing CSV lines/objects. Since the properties of a JavaScript
  * object do not have a definite order, this will help ensure that there is an order.
  */
-export function Field<T>(index: number, type: (new() =>T) | undefined = undefined, arraylength: number | undefined = undefined, predicate: FieldPredicate<T> | undefined = undefined) {
+export function Field(index: number) {
     return function (target: Object, propertyKey: string) {
         const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
             (target.constructor as any)[CSV_PROP] :
             (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
 
-        meta.push({
-            propertyKey: propertyKey,
-            [CSV_INDEX]: index,
-            [CSV_ARRAYLENGTH]: arraylength,
-            [CSV_PREDICATE]: predicate,
-            new: () => create(type)
-        });
+        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
+
+        if (entry) {
+            entry[CSV_INDEX] = index;
+        } else {
+            meta.push({
+                propertyKey: propertyKey,
+                [CSV_INDEX]: index
+            });
+        }
+    }
+}
+
+export function ArrayField<T>(type : (new() => T), length: number) {
+    return function (target: Object, propertyKey: string) {
+        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
+            (target.constructor as any)[CSV_PROP] :
+            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+
+        let entry = meta.find((m:any) => m.propertyKey === propertyKey);
+
+        if (entry) {
+            entry[CSV_ARRAYLENGTH] = length;
+            entry.create = () => create<T>(type);
+        } else {
+            meta.push({
+                propertyKey: propertyKey,
+                [CSV_ARRAYLENGTH]: length,
+                create: () => create<T>(type)
+            });
+        }
     }
 }
