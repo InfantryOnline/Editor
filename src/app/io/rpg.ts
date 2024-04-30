@@ -36,7 +36,7 @@ export class RpgEntry extends CsvFragment {
     resetInventory: boolean = false;
 
     @Field(6)
-    @ArrayField<RpgInventoryMutator>(RpgInventoryMutator, 16)
+    @ArrayField(RpgInventoryMutator, 16)
     mutators: RpgInventoryMutator[] = [];
 
     @Field(7)
