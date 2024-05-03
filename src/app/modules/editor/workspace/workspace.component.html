@@ -42,6 +42,9 @@
                         {
                             <app-lio-tab [context]="asLioContext(tab)"></app-lio-tab>
                         }
+                        @case (TabContextType.Rpg) {
+                            <app-rpg-tab [context]="asRpgContext(tab)"></app-rpg-tab>
+                        }
                     }
                 </mat-tab>
             }

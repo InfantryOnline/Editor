@@ -1,0 +1,47 @@
+<mat-drawer-container class="example-container" autosize>
+    <mat-drawer mode="side" opened disableClose class="drawer-side">
+        <div  style="height: 600px;">
+            <app-tree [treeData]="treeData$" (selected)="onSelectFile($event)"></app-tree>
+        </div>
+    </mat-drawer>
+    <mat-drawer-content class="drawer-content">
+        <div [formGroup]="form">
+            <div class="form-row">
+                <mat-form-field>
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+    
+                <mat-form-field>
+                    <mat-label>Category</mat-label>
+                    <mat-select formControlName="category" (selectionChange)="onChangeCategory($event)">
+                        @for (node of treeData; track node.name) {
+                            <mat-option value="{{ node.name }}">{{ node.name }}</mat-option>    
+                        }
+    
+                        <mat-divider></mat-divider>
+                        <mat-option [value]="null">New Category</mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <mat-form-field>
+                    <mat-label>Skill ID</mat-label>
+                    <input matInput formControlName="skillId">
+                </mat-form-field>
+                
+                <mat-form-field>
+                    <mat-label>Price</mat-label>
+                    <input matInput formControlName="price">
+                </mat-form-field>
+            </div>
+
+            <div class="form-row">
+                <mat-form-field>
+                    <mat-label>Description</mat-label>
+
+                    <textarea rows="2" matInput formControlName="description"></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+    </mat-drawer-content>
+</mat-drawer-container>

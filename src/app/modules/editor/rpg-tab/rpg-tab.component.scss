@@ -1,0 +1,28 @@
+.example-container {
+    width: auto;
+    margin: 10px;
+  }
+
+  .drawer-side {
+    padding: 10px;
+  }
+
+  .drawer-content {
+    padding: 10px;
+    background-color: #fff;
+    height: 95vh;
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: auto;
+
+    > mat-form-field {
+        flex: 1 1 auto;
+
+        &:not(:first-child) {
+            margin-left: 15px;
+        }
+        
+    }
+  }

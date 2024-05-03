@@ -4,7 +4,7 @@ import { MatTabGroup, MatTab, MatTabHeader } from "@angular/material/tabs";
 import { MatDrawer } from "@angular/material/sidenav";
 import { BlobFile } from "../../../io/blo";
 import { LevelFile } from "../../../io/level";
-import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, TabContextType } from "../../../workspace/tab-context";
+import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, RpgTabContext, TabContextType } from "../../../workspace/tab-context";
 import { LioFile } from "../../../io/lio/lio";
 import { RpgFile } from "../../../io/rpg";
 
@@ -117,10 +117,25 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
     }
 
     async onRpgSelected($event: File) { 
-        let buffer = await $event.arrayBuffer();
+        let idx = this.tabs.findIndex(t => t.name  === $event.name);
 
-        let entry = new RpgFile();
-        entry.parse(buffer);
+        if (idx === -1) {
+            let buffer = await $event.arrayBuffer();
+
+            let entry = new RpgFile();
+            entry.parse(buffer);
+
+            let context = new RpgTabContext();
+            context.name = $event.name;
+            context.file = entry;
+            context.workspace = this.workspace;
+
+            this.tabs.push(context);
+
+            this.selectedTabIndex = this.tabs.length + 1;
+        } else {
+            this.selectedTabIndex = idx + 1;
+        }
     }
 
     asBlobContext(tab : ITabContext): BlobTabContext {
@@ -133,6 +148,10 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
 
     asLioContext(tab: ITabContext): LioTabContext {
         return tab as LioTabContext;
+    }
+
+    asRpgContext(tab: ITabContext): RpgTabContext {
+        return tab as RpgTabContext;
     }
 
     handleTabClick(tab: MatTab, tabHeader: MatTabHeader, idx: number) {

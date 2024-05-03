@@ -3,11 +3,11 @@ const CSV_INDEX = '__csv_index__';
 const CSV_ARRAYLENGTH = '__csv_arraylength__';
 const CSV_PREDICATE = '__csv_predicate__';
 
-type FieldPredicate<T> = (obj: T) => boolean;
-
-function create<T>(type: (new () => T)): T {
-    return new type();
-}
+/**
+ * Used to satisfy the criteria for a particular field for a given CSV Index; usually you use this if you have different properties
+ * mapped to the same index across different versions of the file.
+ */
+export type FieldPredicate<T> = (obj: T) => boolean;
 
 /**
  * Decorator used to aid in parsing CSV lines/objects. Since the properties of a JavaScript
@@ -18,9 +18,7 @@ function create<T>(type: (new () => T)): T {
  */
 export function Field(index: number) {
     return function (target: Object, propertyKey: string) {
-        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
-            (target.constructor as any)[CSV_PROP] :
-            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+        const meta = getOrCreateCsvProp(target);
 
         let entry = meta.find((m:any) => m.propertyKey === propertyKey);
 
@@ -44,9 +42,7 @@ export function Field(index: number) {
  */
 export function ArrayField<T>(type : (new() => T), length: number) {
     return function (target: Object, propertyKey: string) {
-        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
-            (target.constructor as any)[CSV_PROP] :
-            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+        const meta = getOrCreateCsvProp(target);
 
         let entry = meta.find((m:any) => m.propertyKey === propertyKey);
 
@@ -73,9 +69,7 @@ export function ArrayField<T>(type : (new() => T), length: number) {
  */
 export function FieldPredicate<T>(predicate: FieldPredicate<T>) {
     return function (target: Object, propertyKey: string) {
-        const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
-            (target.constructor as any)[CSV_PROP] :
-            (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+        const meta = getOrCreateCsvProp(target);
 
         let entry = meta.find((m:any) => m.propertyKey === propertyKey);
 
@@ -164,4 +158,18 @@ export abstract class CsvFragment {
 
         return columns;
     }
+}
+
+// Helpers
+
+function create<T>(type: (new () => T)): T {
+    return new type();
+}
+
+function getOrCreateCsvProp(target: Object) {
+    const meta = target.constructor.hasOwnProperty(CSV_PROP) ?
+        (target.constructor as any)[CSV_PROP] :
+        (Object.defineProperty(target.constructor, CSV_PROP, {value:[]}) as any)[CSV_PROP];
+
+    return meta;
 }

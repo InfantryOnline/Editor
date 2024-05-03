@@ -1,16 +1,14 @@
-<div>
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-        <mat-tree-node class="item-node" *matTreeNodeDef="let node" matTreeNodePadding>
-            <button mat-button (click)="onSelectFile(node)">{{node.name}}</button>
-        </mat-tree-node>
-        <mat-tree-node class="tree-node" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-            <button mat-button [attr.aria-label]="'Toggle ' + node.name" matTreeNodeToggle color="primary">
-                <mat-icon class="mat-icon-rtl-mirror">
-                    {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-                </mat-icon>
+<mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree-node class="item-node" *matTreeNodeDef="let node" matTreeNodePadding>
+        <button mat-button (click)="onSelectFile(node)">{{node.name}}</button>
+    </mat-tree-node>
+    <mat-tree-node class="tree-node" *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+        <button mat-button [attr.aria-label]="'Toggle ' + node.name" matTreeNodeToggle color="primary">
+            <mat-icon class="mat-icon-rtl-mirror">
+                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
 
-                {{node.name}}
-            </button>
-        </mat-tree-node>
-    </mat-tree>
-</div>
+            {{node.name}}
+        </button>
+    </mat-tree-node>
+</mat-tree>
