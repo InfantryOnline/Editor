@@ -1,11 +1,12 @@
-import { LioEntry, LioType } from "./lio";
+import { CsvFragment, Field } from "../csv/field";
 
-export class LioText extends LioEntry {
+export class LioText extends CsvFragment {
+    @Field(0)
     color: number = 0;
-    frequency: number = 0;
-    text: string = "";
 
-    constructor() {
-        super(LioType.Text);
-    }
+    @Field(1)
+    frequency: number = 0;
+
+    @Field(2)
+    text: string = "";
 }
