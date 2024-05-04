@@ -1,4 +1,4 @@
-import { CsvFragment, Field, FieldPredicate } from "./csv/field";
+import { ArrayField, CsvFragment, Field, FieldPredicate } from "./csv/field";
 import * as Papa from 'papaparse';
 
 export enum ItemType {
@@ -154,6 +154,38 @@ export class AmmoItem extends CsvFragment {
     graphics: Graphics = new Graphics();
 }
 
+export class MultiItemSlot extends CsvFragment {
+    @Field(0)
+    value: number = 0;
+}
+
+export class MultiItem extends CsvFragment {
+    @Field(0)
+    graphics: Graphics = new Graphics();
+
+    @Field(1)
+    cash: number = 0;
+
+    @Field(2)
+    energy: number = 0;
+
+    @Field(3)
+    health: number = 0;
+
+    @Field(4)
+    repair: number = 0;
+
+    @Field(5)
+    experience: number = 0;
+
+    @Field(6)
+    @ArrayField<MultiItemSlot>(MultiItemSlot, 16)
+    slots: MultiItemSlot[] = [];
+
+    @Field(7)
+    expandRadius: number = 0; // TODO: Predicate for version > v53.
+}
+
 export class ItemEntry extends CsvFragment {
     @Field(0)
     type: ItemType = ItemType.Unknown;
@@ -169,6 +201,10 @@ export class ItemEntry extends CsvFragment {
     @Field(2, AmmoItem)
     @FieldPredicate<ItemEntry>(ii => ii.type === ItemType.Ammo)
     ammo?: AmmoItem;
+
+    @Field(2, MultiItem)
+    @FieldPredicate<ItemEntry>(ii => ii.type === ItemType.Multi)
+    multi?: MultiItem;
 }
 
 /**
