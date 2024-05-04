@@ -98,8 +98,10 @@ export abstract class CsvFragment {
 
         newArgs.unshift(this);
 
+        const maxColumn =  Math.max(...meta.map((p: any) => p[CSV_INDEX]));
+
         for (let i = 0; i < row.length; i++) {  
-            if (columns >= meta.length) {
+            if (columns > maxColumn) {
                 // We've read through all the items  here.
                 break;
             }
