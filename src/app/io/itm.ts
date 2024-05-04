@@ -158,17 +158,17 @@ export class ItemEntry extends CsvFragment {
     @Field(0)
     type: ItemType = ItemType.Unknown;
 
-    @Field(1)
+    @Field(1, General)
     @FieldPredicate<ItemEntry>(ii => ii.type !== ItemType.Nested)
-    general: General = new General();
+    general?: General;
 
-    @Field(1)
+    @Field(1, NestedItem)
     @FieldPredicate<ItemEntry>(ii => ii.type === ItemType.Nested)
-    nested: NestedItem = new NestedItem();
+    nested?: NestedItem;
 
-    @Field(2)
+    @Field(2, AmmoItem)
     @FieldPredicate<ItemEntry>(ii => ii.type === ItemType.Ammo)
-    ammo: AmmoItem = new AmmoItem();
+    ammo?: AmmoItem;
 }
 
 /**

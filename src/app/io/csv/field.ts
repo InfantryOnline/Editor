@@ -16,7 +16,7 @@ export type FieldPredicate<T> = (obj: T, ...args: any[]) => boolean;
  * @param index 
  * @returns 
  */
-export function Field(index: number) {
+export function Field<T>(index: number, type: (new() => T) | undefined = undefined) {
     return function (target: Object, propertyKey: string) {
         const meta = getOrCreateCsvProp(target);
 
@@ -24,10 +24,15 @@ export function Field(index: number) {
 
         if (entry) {
             entry[CSV_INDEX] = index;
+
+            if (type) {
+                entry.create = () => create<T>(type);
+            }
         } else {
             meta.push({
                 propertyKey: propertyKey,
-                [CSV_INDEX]: index
+                [CSV_INDEX]: index,
+                create: type && (() => create<T>(type))
             });
         }
     }
@@ -119,7 +124,12 @@ export abstract class CsvFragment {
             prop = prop || props[0];
 
             let obj = <any>this;
-            let t = typeof obj[prop.propertyKey];
+
+            let t = 'object';   // Set 'object' by default in case it is null.
+
+            if (obj[prop.propertyKey] !== undefined) {
+                t = typeof obj[prop.propertyKey];
+            }
 
             switch(t) {
                 case 'number':
@@ -152,17 +162,20 @@ export abstract class CsvFragment {
                         columns++;
                     } else {
                         if (!obj[prop.propertyKey]) {
-                            throw new Error('Object not initialized, cannot parse without knowing type.');
-                        } else {
-                            i--;
+                            if (!prop.create) {
+                                throw new Error(`Unable to create type or ${prop.propertyKey}, pass in the T for Field.`);
+                            }
 
-                            const childColumnCount = (obj[prop.propertyKey] as CsvFragment).parse(row.slice(i+1), newArgs);
-                            innerProps += childColumnCount;
-                            i += childColumnCount;
-
-                            columns++;
+                            obj[prop.propertyKey] = prop.create();
                         }
-                        //throw new Error(`Encountered an object but not an array ${t}. Sub-objects are not implemented yet.`);
+
+                        i--;
+
+                        const childColumnCount = (obj[prop.propertyKey] as CsvFragment).parse(row.slice(i+1), newArgs);
+                        innerProps += childColumnCount;
+                        i += childColumnCount;
+
+                        columns++;
                     }
                     break;
                 default:
