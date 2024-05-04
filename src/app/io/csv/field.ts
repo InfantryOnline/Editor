@@ -89,7 +89,9 @@ export abstract class CsvFragment {
         let columns: number = 0;
         let innerProps: number = 0;
         const meta = (this.constructor as any)[CSV_PROP];
-        const newArgs = (args && structuredClone(args) || []).unshift(this);
+        const newArgs = (args && structuredClone(args)) || [];
+
+        newArgs.unshift(this);
 
         for (let i = 0; i < row.length; i++) {  
             if (columns >= meta.length) {
