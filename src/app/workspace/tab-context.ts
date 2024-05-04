@@ -1,7 +1,7 @@
 import { BlobFile } from "../io/blo";
 import { ItemFile } from "../io/itm";
 import { LevelFile } from "../io/level";
-import { LioFile } from "../io/lio/lio";
+import { LioFile } from "../io/lio/lio-file";
 import { RpgFile } from "../io/rpg";
 import { Minimap } from "./minimap";
 import { Viewport } from "./viewport";

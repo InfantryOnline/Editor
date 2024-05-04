@@ -1,4 +1,18 @@
+import { CsvFragment, Field, FieldPredicate } from "../csv/field";
+import { LioDoor } from "./lio-door";
+import { LioFile } from "./lio-file";
+import { LioFlag } from "./lio-flag";
+import { LioHide } from "./lio-hide";
+import { LioNested } from "./lio-nested";
+import { LioParallax } from "./lio-parallax";
+import { LioPortal } from "./lio-portal";
+import { LioSound } from "./lio-sound";
+import { LioSwitch } from "./lio-switch";
+import { LioText } from "./lio-text";
+import { LioWarpField } from "./lio-warp-field";
+
 export enum LioType {
+    Unknown = 0,
     Door = 1,
     Switch,
     Flag,
@@ -11,67 +25,85 @@ export enum LioType {
     Nested
 }
 
-export interface ILioEntry {
-    type: LioType;
-    name: string;
-    id: number;
-    version: string;
-    offsetX: number;
-    offsetY: number;
-    width: number;
-    height: number;
-    relativeId: number;
-    huntFrequency: number;
+export class LioGeneral extends CsvFragment {
+    @Field(0)
+    type: LioType = LioType.Unknown;
+
+    @Field(1)
+    version: string = "";
+
+    @Field(2)
+    id: number = 0;
+
+    @Field(3)
+    name: string = "";
+
+    @Field(4)
+    offsetX: number = 0;
+
+    @Field(5)
+    offsetY: number = 0;
+
+    @Field(6)
+    width: number = 0;
+
+    @Field(7)
+    height: number = 0;
+
+    @Field(8)
+    relativeId: number = 0;
+
+    @Field(9)
+    huntFrequency: number = 0;
 }
 
-export class LioEntry {
-    type: LioType;
-    name: string;
-    id: number;
-    version: string;
-    offsetX: number;
-    offsetY: number;
-    width: number;
-    height: number;
-    relativeId: number;
-    huntFrequency: number;
+export class LioEntry extends CsvFragment{
 
-    constructor(type: LioType) {
-        this.type = type;
-        this.name = "";
-        this.id = 0;
-        this.version = "";
-        this.offsetX = 0;
-        this.offsetY = 0;
-        this.width = 0;
-        this.height = 0;
-        this.relativeId = 0;
-        this.huntFrequency = 0;
-    }
-}
 
-export class Text extends LioEntry {
-    color: number;
-    frequency: number;
-    text: string;
+    @Field(0)
+    type: LioType = LioType.Unknown;
 
-    constructor() {
-        super(LioType.Text);
-        this.color = 0;
-        this.frequency = 0;
-        this.text = "";
-    }
-}
+    @Field(1, LioGeneral)
+    @FieldPredicate<LioEntry>(ii => ii.type !== LioType.Nested)
+    general?: LioGeneral;
 
-export class LioFile {
-    entries: ILioEntry[];
+    @Field(1, LioNested)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Nested)
+    nested?: LioNested;
 
-    constructor() {
-        this.entries = [];
-    }
+    @Field(2, LioDoor)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Door)
+    door?: LioDoor;
 
-    parse(csvString: string): void {
-        // use parse stuff here
-        console.log(csvString);
-    }
+    @Field(2, LioFlag)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Flag)
+    flag?: LioFlag;
+
+    @Field(2, LioHide)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Hide)
+    hide?: LioHide;
+
+    @Field(2, LioParallax)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Parallax)
+    parallax?: LioParallax;
+
+    @Field(2, LioPortal)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Portal)
+    portal?: LioPortal;
+
+    @Field(2, LioSound)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Sound)
+    sound?: LioSound;
+
+    @Field(2, LioSwitch)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Switch)
+    switch?: LioSwitch;
+
+    @Field(2, LioText)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.Text)
+    text?: LioText;
+
+    @Field(2, LioWarpField)
+    @FieldPredicate<LioEntry>(ii => ii.type === LioType.WarpField)
+    warpField?: LioWarpField;
 }
