@@ -1,53 +1,29 @@
-import { ILioEntry, LioType } from "./lio";
-import { LioDoor } from "./lio-door";
-import { LioFlag } from "./lio-flag";
-import { getEntries } from "../../helpers/csv-helpers";
-import { LioHide } from "./lio-hide";
-import { LioNested } from "./lio-nested";
-import { LioParallax } from "./lio-parallax";
-import { LioPortal } from "./lio-portal";
-import { LioSound } from "./lio-sound";
-import { LioSwitch } from "./lio-switch";
-import { LioText } from "./lio-text";
-import { LioWarpField } from "./lio-warp-field";
+import { LioEntry } from "./lio";
+import * as Papa from 'papaparse';
 
 export class LioFile {
-    entries: ILioEntry[];
+    entries: LioEntry[];
 
     constructor() {
         this.entries = [];
     }
 
-    assignEntries(parsedCsv: any[][]): void {
-        this.entries = getEntries(parsedCsv, this.getClass) as ILioEntry[];
-        console.log(this.entries);
-    }
+    async parse(buffer: ArrayBuffer) {
+        const text = new TextDecoder().decode(buffer);
+        let parsed = await Papa.parse(text, {header: false});
 
-    getClass(type: LioType) {
-        switch(type)
-        {
-            case LioType.Text:
-                return new LioText();
-            case LioType.WarpField:
-                return new LioWarpField();
-            case LioType.Switch:
-                return new LioSwitch();
-            case LioType.Sound:
-                return new LioSound();
-            case LioType.Portal:
-                return new LioPortal();
-            case LioType.Parallax:
-                return new LioParallax();
-            case LioType.Hide:
-                return new LioHide();
-            case LioType.Flag:
-                return new LioFlag();
-            case LioType.Door:
-                return new LioDoor();
-            case LioType.Nested:
-                return new LioNested();
-            default:
-                return null;
+        for (let line of parsed.data as any[]) {
+            // Remove 'empty' lines
+            if (line.length === 1 && line[0] === '') {
+                continue;
+            }
+
+            let entry = new LioEntry();
+            entry.parse(line);
+
+            this.entries.push(entry);
         }
+
+        console.log(this);
     }
 }

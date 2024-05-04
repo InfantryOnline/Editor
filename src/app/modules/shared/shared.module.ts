@@ -13,13 +13,11 @@ import { MatChipsModule } from '@angular/material/chips';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from "@angular/common";
-import { NgxCsvParserModule } from "ngx-csv-parser";
 import { BaseEditorComponent } from "./base-editor/base-editor.component";
 import { TreeComponent } from "./tree/tree.component";
 
-
 /**
- * Contains all the angular entities as it relates to the editor.
+ * Contains sharable entities that are used by the rest of the editor.
  */
 @NgModule({
     declarations: [
@@ -41,7 +39,6 @@ import { TreeComponent } from "./tree/tree.component";
         MatChipsModule,
         OverlayModule,
         MatProgressSpinnerModule,
-        NgxCsvParserModule,
     ],
     exports: [
         CommonModule,
@@ -58,7 +55,6 @@ import { TreeComponent } from "./tree/tree.component";
         MatChipsModule,
         OverlayModule,
         MatProgressSpinnerModule,
-        NgxCsvParserModule,
         TreeComponent,
         BaseEditorComponent,
     ],

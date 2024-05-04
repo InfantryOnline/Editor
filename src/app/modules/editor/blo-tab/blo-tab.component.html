@@ -20,14 +20,17 @@
                 <div class="details">
                     <div style="margin-bottom: 20px;">
                         <mat-chip-set>
-                            <mat-chip class="attribute"><strong>Name:</strong> {{ selectedEntry.name }}</mat-chip>
-                            <mat-chip class="attribute"><strong>Offset:</strong> {{ selectedEntry.offset }}</mat-chip>
-                            <mat-chip class="attribute"><strong>Length:</strong> {{ selectedEntry.length }}</mat-chip>
+                            @for (attribute of attributes; track attribute.label) {
+                                <mat-basic-chip class="attribute"><span class="attribute-label">{{ attribute.label }}</span><span class="attribute-content">{{ attribute.text }}</span></mat-basic-chip>
+                            }
                         </mat-chip-set>
                     </div>
-                    @if (selectedSprite)
-                    {
+                    @if (selectedFormat === SupportedBloFormats.Cfs && this.selectedSprite) {
                         <app-cfs-preview [sprite]="selectedSprite"></app-cfs-preview>
+                    } @else if (selectedFormat === SupportedBloFormats.Wav) {
+                        <button mat-flat-button color="primary" (click)="onPlay()" [disabled]="isProcessing"><i class="fa-solid fa-play"></i> Play Audio</button>
+                    } @else {
+                        <p>Format preview is not supported.</p>
                     }
                 </div>
             }

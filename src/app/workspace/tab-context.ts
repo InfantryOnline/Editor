@@ -1,6 +1,8 @@
 import { BlobFile } from "../io/blo";
+import { ItemFile } from "../io/itm";
 import { LevelFile } from "../io/level";
 import { LioFile } from "../io/lio/lio-file";
+import { RpgFile } from "../io/rpg";
 import { Minimap } from "./minimap";
 import { Viewport } from "./viewport";
 import { Workspace } from "./workspace";
@@ -53,6 +55,15 @@ export class LioTabContext implements ITabContext {
 export class RpgTabContext implements ITabContext {
     readonly type: TabContextType = TabContextType.Rpg;
     name: string = '';
+    file: RpgFile | null = null;
+    workspace: Workspace = new Workspace();
+    rendering: boolean = false;
+}
+
+export class ItemTabContext implements ITabContext {
+    readonly type: TabContextType = TabContextType.Itm;
+    name: string = '';
+    file: ItemFile | null = null;
     workspace: Workspace = new Workspace();
     rendering: boolean = false;
 }

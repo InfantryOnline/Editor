@@ -1,19 +1,36 @@
-import { LioEntry, LioType } from "./lio";
+import { CsvFragment, Field } from "../csv/field";
 
-export class LioParallax extends LioEntry {
+export class LioParallax extends CsvFragment {
+    @Field(0)
     nearDistance: number = 0;
-    farDistance: number = 0;
-    quantity: number = 0;
-    parallaxBlobName: string = "";
-    parallaxBlobId: string = "";
-    lightPermutation: number = 0;
-    paletteOffset: number = 0;
-    hue: number = 0;
-    saturation: number = 0;
-    value: number = 0;
-    animationTime: number = 0;
 
-    constructor() {
-        super(LioType.Parallax);
-    }
+    @Field(1)
+    farDistance: number = 0;
+
+    @Field(2)
+    quantity: number = 0;
+
+    @Field(3)
+    parallaxBlobName: string = "";
+
+    @Field(4)
+    parallaxBlobId: string = "";
+
+    @Field(5)
+    lightPermutation: number = 0;
+
+    @Field(6)
+    paletteOffset: number = 0;
+
+    @Field(7)
+    hue: number = 0;
+
+    @Field(8)
+    saturation: number = 0;
+
+    @Field(9)
+    value: number = 0;
+
+    @Field(10)
+    animationTime: number = 0;
 }

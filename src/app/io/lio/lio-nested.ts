@@ -1,9 +1,6 @@
-import { LioEntry, LioType } from "./lio";
+import { CsvFragment, Field } from "../csv/field";
 
-export class LioNested extends LioEntry {
+export class LioNested extends CsvFragment {
+    @Field(0)
     nestedLioFileName: string = "";
-
-    constructor() {
-        super(LioType.Nested);
-    }
 }

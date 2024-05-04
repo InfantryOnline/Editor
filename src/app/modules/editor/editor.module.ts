@@ -10,7 +10,15 @@ import { VehTabComponent } from "./veh-tab/veh-tab.component";
 import { CfsPreviewComponent } from "./cfs-preview/cfs-preview.component";
 import { MinimapOverlayComponent } from "./minimap-overlay/minimap-overlay.component";
 import { SharedModule } from "../shared/shared.module";
-
+import { RpgTabComponent } from "./rpg-tab/rpg-tab.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSelectModule} from '@angular/material/select';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 /**
  * Contains all the angular entities as it relates to the editor.
@@ -26,10 +34,19 @@ import { SharedModule } from "../shared/shared.module";
         ItmTabComponent,
         VehTabComponent,
         CfsPreviewComponent,
-        MinimapOverlayComponent
+        MinimapOverlayComponent,
+        RpgTabComponent
     ],
     exports: [WorkspaceComponent, DirectoryComponent],
     imports: [
+        MatInputModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatSlideToggleModule,
+        MatTooltipModule,
+        MatSelectModule,
+        MatDividerModule,
+        MatExpansionModule,
         SharedModule
     ]
 })

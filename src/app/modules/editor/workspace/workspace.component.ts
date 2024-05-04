@@ -4,9 +4,10 @@ import { MatTabGroup, MatTab, MatTabHeader } from "@angular/material/tabs";
 import { MatDrawer } from "@angular/material/sidenav";
 import { BlobFile } from "../../../io/blo";
 import { LevelFile } from "../../../io/level";
-import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, TabContextType } from "../../../workspace/tab-context";
-import { NgxCsvParser } from "ngx-csv-parser";
 import { LioFile } from "../../../io/lio/lio-file";
+import { BlobTabContext, ITabContext, ItemTabContext, LevelTabContext, LioTabContext, RpgTabContext, TabContextType } from "../../../workspace/tab-context";
+import { RpgFile } from "../../../io/rpg";
+import { ItemFile } from "../../../io/itm";
 
 /**
  * Contains the large blocks of the editor, i.e. the workspace.
@@ -27,7 +28,7 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
 
     TabContextType = TabContextType;
 
-    constructor(private ngxCsvParser: NgxCsvParser) { }
+    constructor() { }
 
     ngOnInit(): void {
 
@@ -88,32 +89,64 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
         let idx = this.tabs.findIndex(t => t.name  === $event.name);
 
         if (idx === -1) {
-            const reader: FileReader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    let lio = new LioFile();
-                    const csvData = this.ngxCsvParser.csvStringToArray(reader.result.toString(), ",");
-                    lio.assignEntries(csvData);
+            let buffer = await $event.arrayBuffer();
 
-                    let context = new LioTabContext();
-                    context.name = $event.name;
-                    context.file = lio;
-                    context.workspace = this.workspace;
+            let entry = new LioFile();
+            entry.parse(buffer);
 
-                    this.tabs.push(context);
+            let context = new LioTabContext();
+            context.name = $event.name;
+            context.file = entry;
+            context.workspace = this.workspace;
 
-                    this.selectedTabIndex = this.tabs.length + 1;
-                } else {
-                    throw new Error("Failed to read the file.");
-                }
-            };
-            reader.onerror = (error) => {
-                throw error;
-            };
+            this.tabs.push(context);
 
-            reader.readAsText($event);
-
+            this.selectedTabIndex = this.tabs.length + 1;
         } else  {
+            this.selectedTabIndex = idx + 1;
+        }
+    }
+
+    async onRpgSelected($event: File) {
+        let idx = this.tabs.findIndex(t => t.name  === $event.name);
+
+        if (idx === -1) {
+            let buffer = await $event.arrayBuffer();
+
+            let entry = new RpgFile();
+            entry.parse(buffer);
+
+            let context = new RpgTabContext();
+            context.name = $event.name;
+            context.file = entry;
+            context.workspace = this.workspace;
+
+            this.tabs.push(context);
+
+            this.selectedTabIndex = this.tabs.length + 1;
+        } else {
+            this.selectedTabIndex = idx + 1;
+        }
+    }
+
+    async onItmSelected($event: File) {
+        let idx = this.tabs.findIndex(t => t.name  === $event.name);
+
+        if (idx === -1) {
+            let buffer = await $event.arrayBuffer();
+
+            let entry = new ItemFile();
+            entry.parse(buffer);
+
+            let context = new ItemTabContext();
+            context.name = $event.name;
+            context.file = entry;
+            context.workspace = this.workspace;
+
+            this.tabs.push(context);
+
+            this.selectedTabIndex = this.tabs.length + 1;
+        } else {
             this.selectedTabIndex = idx + 1;
         }
     }
@@ -128,6 +161,14 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
 
     asLioContext(tab: ITabContext): LioTabContext {
         return tab as LioTabContext;
+    }
+
+    asRpgContext(tab: ITabContext): RpgTabContext {
+        return tab as RpgTabContext;
+    }
+
+    asItmContext(tab: ITabContext): ItemTabContext {
+        return tab as ItemTabContext;
     }
 
     handleTabClick(tab: MatTab, tabHeader: MatTabHeader, idx: number) {

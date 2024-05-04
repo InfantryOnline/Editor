@@ -8,4 +8,18 @@
 
 .attribute {
     margin-right: 20px;
+    border-radius: 30px;
+    
+    font-size: 14px;
+
+    .attribute-label {
+        padding: 6px 8px;
+        border-top-left-radius: 30px;
+        border-bottom-left-radius: 30px;
+        font-weight: 600;
+    }
+
+    .attribute-content {
+        padding: 6px 9px;
+    }
 }
