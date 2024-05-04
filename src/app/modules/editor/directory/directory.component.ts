@@ -7,12 +7,14 @@ const lvlFilesTitle = "Lvl Files";
 const bloFilesTitle = "Blo Files";
 const lioFilesTitle = "Lio Files";
 const rpgFilesTitle = "Rpg Files";
+const itmFilesTitle = "Itm Files";
 
 const initialTreeData: TreeNode<File>[] = [
     { name: lvlFilesTitle, value: undefined, children: [] },
     { name: bloFilesTitle, value: undefined, children: [] },
     { name: lioFilesTitle, value: undefined, children: [] },
     { name: rpgFilesTitle, value: undefined, children: [] },
+    { name: itmFilesTitle, value: undefined, children: [] },
 ];
 
 @Component({
@@ -27,6 +29,7 @@ export class DirectoryComponent implements OnInit {
     @Output() lvlSelected: EventEmitter<File> = new EventEmitter<File>();
     @Output() lioSelected: EventEmitter<File> = new EventEmitter<File>();
     @Output() rpgSelected: EventEmitter<File> = new EventEmitter<File>();
+    @Output() itmSelected: EventEmitter<File> = new EventEmitter<File>();
 
     fileTreeData$ = new BehaviorSubject<TreeNode<File>[]>(initialTreeData);
 
@@ -48,6 +51,8 @@ export class DirectoryComponent implements OnInit {
             this.lioSelected.emit(node.value);
         } else if (node.name.endsWith(this.directory$.value.RpgFileSuffix)) {
             this.rpgSelected.emit(node.value);
+        } else if (node.name.endsWith(this.directory$.value.ItemFileSuffix)) {
+            this.itmSelected.emit(node.value);
         }
     }
 
@@ -61,6 +66,8 @@ export class DirectoryComponent implements OnInit {
                 BuildTree(treeBranch, this.directory$.value.lvlFiles);
             } else if(treeBranch.name === rpgFilesTitle) {
                 BuildTree(treeBranch, this.directory$.value.rpgFiles);
+            } else if(treeBranch.name === itmFilesTitle) {
+                BuildTree(treeBranch, this.directory$.value.itmFiles);
             }
         });
     }

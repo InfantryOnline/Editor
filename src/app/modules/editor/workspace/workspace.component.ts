@@ -4,9 +4,10 @@ import { MatTabGroup, MatTab, MatTabHeader } from "@angular/material/tabs";
 import { MatDrawer } from "@angular/material/sidenav";
 import { BlobFile } from "../../../io/blo";
 import { LevelFile } from "../../../io/level";
-import { BlobTabContext, ITabContext, LevelTabContext, LioTabContext, RpgTabContext, TabContextType } from "../../../workspace/tab-context";
+import { BlobTabContext, ITabContext, ItemTabContext, LevelTabContext, LioTabContext, RpgTabContext, TabContextType } from "../../../workspace/tab-context";
 import { LioFile } from "../../../io/lio/lio";
 import { RpgFile } from "../../../io/rpg";
+import { ItemFile } from "../../../io/itm";
 
 /**
  * Contains the large blocks of the editor, i.e. the workspace.
@@ -138,6 +139,28 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
         }
     }
 
+    async onItmSelected($event: File) { 
+        let idx = this.tabs.findIndex(t => t.name  === $event.name);
+
+        if (idx === -1) {
+            let buffer = await $event.arrayBuffer();
+
+            let entry = new ItemFile();
+            entry.parse(buffer);
+
+            let context = new ItemTabContext();
+            context.name = $event.name;
+            context.file = entry;
+            context.workspace = this.workspace;
+
+            this.tabs.push(context);
+
+            this.selectedTabIndex = this.tabs.length + 1;
+        } else {
+            this.selectedTabIndex = idx + 1;
+        }
+    }
+
     asBlobContext(tab : ITabContext): BlobTabContext {
         return tab as BlobTabContext;
     }
@@ -152,6 +175,10 @@ export class WorkspaceComponent implements OnInit, AfterViewInit {
 
     asRpgContext(tab: ITabContext): RpgTabContext {
         return tab as RpgTabContext;
+    }
+
+    asItmContext(tab: ITabContext): ItemTabContext {
+        return tab as ItemTabContext;
     }
 
     handleTabClick(tab: MatTab, tabHeader: MatTabHeader, idx: number) {

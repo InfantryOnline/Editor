@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { ItemTabContext } from '../../../workspace/tab-context';
 
 @Component({
     selector: 'app-itm-tab',
@@ -7,5 +8,5 @@ import { Component } from '@angular/core';
 })
 
 export class ItmTabComponent {
-
+    @Input() context?: ItemTabContext;
 }

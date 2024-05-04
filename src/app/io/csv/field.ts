@@ -151,7 +151,18 @@ export abstract class CsvFragment {
                         }
                         columns++;
                     } else {
-                        throw new Error(`Encountered an object but not an array ${t}. Sub-objects are not implemented yet.`);
+                        if (!obj[prop.propertyKey]) {
+                            throw new Error('Object not initialized, cannot parse without knowing type.');
+                        } else {
+                            i--;
+
+                            const childColumnCount = (obj[prop.propertyKey] as CsvFragment).parse(row.slice(i+1), newArgs);
+                            innerProps += childColumnCount;
+                            i += childColumnCount;
+
+                            columns++;
+                        }
+                        //throw new Error(`Encountered an object but not an array ${t}. Sub-objects are not implemented yet.`);
                     }
                     break;
                 default:

@@ -5,7 +5,8 @@
             (bloSelected)="onBloSelected($event)"
             (lvlSelected)="onLvlSelected($event)"
             (lioSelected)="onLioSelected($event)"
-            (rpgSelected)="onRpgSelected($event)">
+            (rpgSelected)="onRpgSelected($event)"
+            (itmSelected)="onItmSelected($event)">
         </app-directory>
     </mat-drawer>
     <div>
@@ -44,6 +45,9 @@
                         }
                         @case (TabContextType.Rpg) {
                             <app-rpg-tab [context]="asRpgContext(tab)"></app-rpg-tab>
+                        }
+                        @case (TabContextType.Itm) {
+                            <app-itm-tab [context]="asItmContext(tab)"></app-itm-tab>
                         }
                     }
                 </mat-tab>
