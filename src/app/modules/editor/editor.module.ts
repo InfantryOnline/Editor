@@ -17,6 +17,8 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSelectModule} from '@angular/material/select';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 /**
  * Contains all the angular entities as it relates to the editor.
@@ -43,6 +45,8 @@ import {MatSelectModule} from '@angular/material/select';
         MatSlideToggleModule,
         MatTooltipModule,
         MatSelectModule,
+        MatDividerModule,
+        MatExpansionModule,
         SharedModule
     ]
 })

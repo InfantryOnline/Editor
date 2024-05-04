@@ -1,7 +1,7 @@
 import { ArrayField, CsvFragment, Field } from './csv/field';
 import * as Papa from 'papaparse';
 
-export enum Resets {
+export enum RpgResetKind {
     NoSkills,
     AllSkills,
     OnlySkills,
@@ -30,7 +30,7 @@ export class RpgEntry extends CsvFragment {
     defaultVehicleId: number = 0;
 
     @Field(4)
-    resetSkills: Resets = Resets.NoSkills;
+    resetSkills: RpgResetKind = RpgResetKind.NoSkills;
 
     @Field(5)
     resetInventory: boolean = false;
