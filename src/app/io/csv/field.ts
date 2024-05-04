@@ -5,9 +5,9 @@ const CSV_PREDICATE = '__csv_predicate__';
 
 /**
  * Used to satisfy the criteria for a particular field for a given CSV Index; usually you use this if you have different properties
- * mapped to the same index across different versions of the file.
+ * mapped to the same index across different versions of the file. The args array returns nearest->furthest ancestor object.
  */
-export type FieldPredicate<T> = (obj: T) => boolean;
+export type FieldPredicate<T> = (obj: T, ...args: any[]) => boolean;
 
 /**
  * Decorator used to aid in parsing CSV lines/objects. Since the properties of a JavaScript
@@ -85,10 +85,11 @@ export function FieldPredicate<T>(predicate: FieldPredicate<T>) {
 }
 
 export abstract class CsvFragment {
-    parse(row: any): number {
+    parse(row: any, ...args: any[]): number {
         let columns: number = 0;
         let innerProps: number = 0;
         const meta = (this.constructor as any)[CSV_PROP];
+        const newArgs = (args && structuredClone(args) || []).unshift(this);
 
         for (let i = 0; i < row.length; i++) {  
             if (columns >= meta.length) {
@@ -106,7 +107,7 @@ export abstract class CsvFragment {
             } else if (props.length > 1) {
                 // Two or more properties map to the same index, so we will evaluate their predicates
                 // and return the first that returns true.
-                prop = props.find((p:any) => p[CSV_PREDICATE](this));
+                prop = props.find((p:any) => p[CSV_PREDICATE](this, args));
 
                 if (!prop) {
                     throw new Error('Unable to satisfy predicate for CSV branching.');
@@ -137,10 +138,10 @@ export abstract class CsvFragment {
                 case 'object':
                     if (prop[CSV_ARRAYLENGTH] !== undefined) {
                         i--;
-                        
+
                         for (let a =  0; a < prop[CSV_ARRAYLENGTH]; a++) {
                             let aObj =  prop.create() as CsvFragment;
-                            let aColumns = aObj.parse(row.slice(i+1));
+                            let aColumns = aObj.parse(row.slice(i+1), newArgs);
 
                             obj[prop.propertyKey].push(aObj);
                             innerProps += aColumns;

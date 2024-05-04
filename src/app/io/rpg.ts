@@ -1,4 +1,4 @@
-import { ArrayField, CsvFragment, Field } from './csv/field';
+import { ArrayField, CsvFragment, Field, FieldPredicate } from './csv/field';
 import * as Papa from 'papaparse';
 
 export enum RpgResetKind {
