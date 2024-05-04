@@ -117,7 +117,9 @@ export abstract class CsvFragment {
                 prop = props.find((p:any) => p[CSV_PREDICATE](this, args));
 
                 if (!prop) {
-                    throw new Error('Unable to satisfy predicate for CSV branching.');
+                    console.log('Warning: Unable to satisfy predicate for CSV branching.');
+                    columns++;
+                    continue;
                 }
             }
 
