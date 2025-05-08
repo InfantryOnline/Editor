@@ -32,11 +32,10 @@ jobs:
     - name: Upload
       uses: sokuhatiku/ftp-upload-artifact@v1.0.0
       with:
-        name: Upload Build
-        path: dist/infantry-editor/
+        path: dist/infantry-editor/browser
         host: ${{ secrets.FTP_HOST }}
         port: ${{ secrets.FTP_PORT }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        remote-path: ./build-output/
+        remote-path: build-output
         secure: true
