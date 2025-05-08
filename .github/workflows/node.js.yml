@@ -28,3 +28,15 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present
+
+    - name: Upload
+      uses: sokuhatiku/ftp-upload-artifact@v1
+      with:
+        name: Upload Build
+        path: dist/infantry-editor/
+        host: ${{ secrets.FTP_HOST }}
+        port: ${{ secrets.FTP_PORT }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        remote-path: /build-output
+        secure: true
