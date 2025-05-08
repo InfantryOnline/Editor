@@ -30,12 +30,11 @@ jobs:
     - run: npm run build --if-present
 
     - name: Upload
-      uses: sokuhatiku/ftp-upload-artifact@v1.0.0
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.5
       with:
-        path: dist/infantry-editor/browser
-        host: ${{ secrets.FTP_HOST }}
+        local-dir: ./dist/infantry-editor/browser/
+        server: ${{ secrets.FTP_HOST }}
         port: ${{ secrets.FTP_PORT }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        remote-path: build-output
-        secure: true
+        server-dir: ./build-output/
