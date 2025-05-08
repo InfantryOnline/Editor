@@ -36,6 +36,5 @@ jobs:
         port: ${{ secrets.FTP_PORT }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        delete: true
         uploads: |
           ./dist/infantry-editor/browser/ => ./
